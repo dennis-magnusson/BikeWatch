@@ -1,0 +1,37 @@
+# Python compiled files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# SQLite database file
+bikes.db
+
+# Virtual environment directories
+env/
+venv/
+.venv/
+*.egg-info/
+
+# IDE specific files
+*.idea/
+*.vscode/
+
+# Logs and temporary files
+*.log
+*.tmp
+
+# Coverage and testing files
+.coverage
+.tox/
+*.coverage.*
+nosetests.xml
+coverage.xml
+*.cover
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints
+
+# Miscellaneous
+.DS_Store
+Thumbs.db
