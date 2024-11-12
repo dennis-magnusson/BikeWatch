@@ -12,6 +12,7 @@ env/
 venv/
 .venv/
 *.egg-info/
+uv.lock
 
 # IDE specific files
 *.idea/
