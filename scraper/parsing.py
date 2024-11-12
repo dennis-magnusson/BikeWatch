@@ -34,12 +34,19 @@ def parse_raw_description(soup):
 
     for p in ps:
         clean_text = p.replace("\xa0", " ").strip()
+
         if clean_text.strip() == "":
             continue
         splitted = clean_text.split(":", maxsplit=1)
 
+        if len(splitted) == 1:
+            continue
+
         key = splitted[0]
-        val = splitted[1].strip()
+        try:
+            val = splitted[1].strip()
+        except IndexError:
+            raise IndexError(f"IndexError: {splitted}, p: {p}")
 
         if keyword_match(keywords["size"], key):
             size = val
