@@ -13,15 +13,26 @@ from scraper.parsing import (
 from scraper.request_throttler import get_request
 
 
-def find_listings_for_category(url):
-    response = get_request(url)
+def find_listings_for_category(base_url, pages=1):
+    urls = [base_url.format(page) for page in range(1, pages + 1)]
 
-    soup = BeautifulSoup(response.text, "html.parser")
+    found_listings = []
 
-    ol = soup.find("ol", class_="ipsDataList")
-    listings = ol.find_all("h4")
+    for url in urls:
+        print(url)
+        response = get_request(url)
+        soup = BeautifulSoup(response.text, "html.parser")
 
-    found_listings = [listing.find_all("a")[1]["href"] for listing in listings]
+        ol = soup.find("ol", class_="ipsDataList")
+        listings = ol.find_all("h4")
+
+        found_listings.extend(
+            [
+                listing.find_all("a")[1].get("href")
+                for listing in listings
+                if len(listing.find_all("a")) >= 2
+            ]
+        )
 
     return found_listings
 
