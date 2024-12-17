@@ -3,10 +3,10 @@ from typing import Iterable
 import sys
 
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, Session
 
 from data.models import Base, BikeListingData
-from scraper.scraper import find_listings_for_category, scrape_listing
+from scraping.scraper import find_listings_for_category, scrape_listing
 from utils.db_operations import add_listing, sync_listings
 
 

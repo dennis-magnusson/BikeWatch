@@ -1,8 +1,36 @@
 from datetime import datetime
-from typing import List
+from typing import List, Optional
 
 from sqlalchemy import DateTime, ForeignKey, func
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
+
+from pydantic import BaseModel
+
+
+class BikeListingBase(BaseModel):
+    id: Optional[str] = None
+    title: str
+    brand: Optional[str] = None
+    model: Optional[str] = None
+    year: Optional[int] = None
+    url: str
+    date_posted: Optional[str] = None
+    size: Optional[str] = None
+    price: Optional[float] = None
+    city: Optional[str] = None
+    region: Optional[str] = None
+    description: Optional[str] = None
+    short_description: Optional[str] = None
+    images: List[str] = []
+
+    class Config:
+        orm_mode = True
+
+
+class BikeListingRead(BikeListingBase):
+    id: str
+    date_first_seen: datetime
+    date_last_updated: datetime
 
 
 class Base(DeclarativeBase):

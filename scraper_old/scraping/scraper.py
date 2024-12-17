@@ -1,9 +1,6 @@
-import re
-
-import requests
 from bs4 import BeautifulSoup
 
-from data.models import BikeListing, BikeListingData
+from data.models import BikeListingData
 from scraper.parsing import (
     parse_date_posted,
     parse_raw_description,
