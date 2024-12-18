@@ -1,16 +1,14 @@
 services:
+    scraper:
+        build: ./scraper
+        environment:
+            SCRAPING_FREQUENCY_MINUTES: 60
+        volumes:
+            - ./data:/app/data
+
     server:
         build: ./server
         ports:
             - "8000:8000"
-
-        develop:
-            watch:
-                - action: sync
-                  path: ./server
-                  target: /app
-                  ignore:
-                      - .venv/
-
-                - action: rebuild
-                  path: ./server/pyproject.toml
+        volumes:
+            - ./data:/app/data
