@@ -1,8 +1,0 @@
-[project]
-name = "bike-alert"
-version = "0.1.0"
-authors = ["Dennis Magnusson"]
-
-[dependencies]
-SQLAlchemy = "2.0.36"
-beautifulsoup4 = "4.12.3"

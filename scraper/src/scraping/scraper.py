@@ -1,16 +1,13 @@
-import re
-
-import requests
 from bs4 import BeautifulSoup
 
-from data.models import BikeListing, BikeListingData
-from scraper.parsing import (
+from data.models import BikeListingData
+from scraping.parsing import (
     parse_date_posted,
     parse_raw_description,
     parse_raw_images,
     parse_raw_title,
 )
-from scraper.request_throttler import get_request
+from scraping.request_throttler import get_request
 
 
 def find_listings_for_category(base_url, pages=1):

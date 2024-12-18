@@ -1,0 +1,14 @@
+services:
+    scraper:
+        build: ./scraper
+        environment:
+            SCRAPING_FREQUENCY_MINUTES: 60
+        volumes:
+            - ./data:/app/data
+
+    server:
+        build: ./server
+        ports:
+            - "8000:8000"
+        volumes:
+            - ./data:/app/data

@@ -1,0 +1,6 @@
+[project]
+name = "bike-alert-scraper"
+version = "0.1.0"
+authors = ["Dennis Magnusson"]
+requires-python = ">=3.12"
+dependencies = ["beautifulsoup4", "SQLAlchemy", "pydantic", "requests"]
