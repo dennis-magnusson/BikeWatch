@@ -1,4 +1,5 @@
 from typing import Iterable
+import logging
 
 from data.models import BikeImage, BikeListing, BikeListingData
 
@@ -10,7 +11,7 @@ def sync_listings(session, scraped_data: Iterable[BikeListingData]):
         if item.id not in existing_bike_ids:
             add_listing(session, item)
         else:
-            print(f"Bike with ID {item.id} already exists. Skipping.")
+            logging.info(f"Bike with ID {item.id} already exists. Skipping.")
 
 
 def add_listing(session, listing_data: BikeListingData):
