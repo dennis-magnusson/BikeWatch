@@ -28,7 +28,9 @@ def main():
     logging.info("Database connected")
 
     # Base.metadata.drop_all(engine)
-    # Base.metadata.create_all(engine)
+
+    Base.metadata.create_all(engine)
+    logging.info("Database schema created")
 
     try:
         while True:
