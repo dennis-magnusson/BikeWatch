@@ -59,7 +59,7 @@ def parse_raw_description(soup):
         elif keyword_match(keywords["year"], key):
             year = val
         elif keyword_match(keywords["price"], key):
-            price = val
+            price = parse_price(val)
         elif keyword_match(keywords["description"], key):
             description = val
         elif keyword_match(keywords["short_description"], key):
@@ -74,6 +74,14 @@ def parse_raw_title(soup):
     post_title = soup.find("h1").find_all("span")[-1].text.rsplit(",", maxsplit=2)
     title = post_title[0]
     return title
+
+
+def parse_price(price_str):
+    # TODO: Handle thousands separator correctly
+    match = re.search(r"\d+", price_str)
+    if match:
+        return int(match.group())
+    return None
 
 
 def parse_date_posted(soup):
