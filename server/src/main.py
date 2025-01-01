@@ -22,7 +22,7 @@ def get_db():
 @app.get("/listings/")
 def get_listings(db: Session = Depends(get_db)):
     query = """
-    SELECT bikes.id, bikes.title, bikes.url, bike_images.image_url
+    SELECT bikes.id, bikes.title, bikes.url, bike_images.image_url, bikes.date_last_updated, bikes.date_posted, bikes.region, bikes.city, bikes.price
     FROM bikes
     LEFT JOIN bike_images ON bikes.id = bike_images.bike_id
     """
@@ -37,6 +37,11 @@ def get_listings(db: Session = Depends(get_db)):
                 "title": row[1],
                 "url": row[2],
                 "images": [],
+                "last_updated": row[4],
+                "originally_posted": row[5],
+                "region": row[6],
+                "city": row[7],
+                "price": row[8],
             }
         listings[bike_id]["images"].append(row[3])
 
