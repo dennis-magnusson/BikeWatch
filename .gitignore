@@ -12,7 +12,6 @@ env/
 venv/
 .venv/
 *.egg-info/
-uv.lock
 **/__pycache__
 **/*.pyc
 
