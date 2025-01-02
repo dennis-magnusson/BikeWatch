@@ -4,7 +4,7 @@ requires-python = ">=3.13"
 [manifest]
 members = [
     "backend",
-    "bike-watch",
+    "bikewatch",
     "common",
     "scraper",
 ]
@@ -49,11 +49,12 @@ wheels = [
 ]
 
 [[package]]
-name = "bike-watch"
+name = "bikewatch"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
     { name = "beautifulsoup4" },
+    { name = "common" },
     { name = "fastapi", extra = ["standard"] },
     { name = "pydantic" },
     { name = "requests" },
@@ -64,6 +65,7 @@ dependencies = [
 [package.metadata]
 requires-dist = [
     { name = "beautifulsoup4", specifier = ">=4.12.3" },
+    { name = "common", editable = "common" },
     { name = "fastapi", extras = ["standard"], specifier = ">=0.115.6" },
     { name = "pydantic", specifier = ">=2.10.4" },
     { name = "requests", specifier = ">=2.32.3" },
