@@ -1,14 +1,18 @@
 services:
     scraper:
-        build: ./scraper
+        build:
+            context: ..
+            dockerfile: docker/Dockerfile.scraper
         environment:
             SCRAPING_FREQUENCY_MINUTES: 60
         volumes:
             - ./data:/app/data
 
-    server:
-        build: ./server
+    backend:
+        build:
+            context: ..
+            dockerfile: docker/Dockerfile.backend
         ports:
             - "8000:8000"
         volumes:
-            - ./data:/app/data
+            - ../data:/app/data
