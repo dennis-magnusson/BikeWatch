@@ -1,6 +1,6 @@
 from bs4 import BeautifulSoup
 
-from data.models import BikeListingData
+from common.models import BikeListingData
 from scraping.parsing import (
     parse_date_posted,
     parse_raw_description,

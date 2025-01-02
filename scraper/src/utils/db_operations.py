@@ -1,7 +1,7 @@
 from typing import Iterable
 import logging
 
-from data.models import BikeImage, BikeListing, BikeListingData
+from common.models import BikeImage, BikeListing, BikeListingData
 
 
 def sync_listings(session, scraped_data: Iterable[BikeListingData]):

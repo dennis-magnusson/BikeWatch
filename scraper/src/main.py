@@ -6,7 +6,7 @@ from typing import Iterable
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, Session
 
-from data.models import Base, BikeListingData
+from common.models import Base, BikeListingData
 from scraping.scraper import find_listings_for_category, scrape_listing
 from utils.db_operations import sync_listings
 
