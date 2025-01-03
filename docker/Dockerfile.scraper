@@ -3,8 +3,9 @@ FROM python:3.12-slim
 # Install uv.
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
-# Copy the application into the container.
+# Copy the application and common library into the container.
 COPY ./scraper/ /app
+COPY ./common/ /app/common
 
 # Copy the uv lockfile into the container.
 COPY pyproject.toml /app/pyproject.toml
