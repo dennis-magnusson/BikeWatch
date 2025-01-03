@@ -64,7 +64,7 @@ def parse_raw_description(soup):
             description = val
         elif keyword_match(keywords["short_description"], key):
             short_description = val
-        elif keyword_match(keywords["region"], val):
+        elif keyword_match(keywords["region"], key):
             region = val
 
     return brand, model, price, year, size, region, city, description, short_description
