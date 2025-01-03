@@ -3,12 +3,12 @@ import os
 from time import sleep
 from typing import Iterable
 
+from scraping.scraper import find_listings_for_category, scrape_listing
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, Session
+from sqlalchemy.orm import Session, sessionmaker
+from utils.db_operations import sync_listings
 
 from common.models import Base, BikeListingData
-from scraping.scraper import find_listings_for_category, scrape_listing
-from utils.db_operations import sync_listings
 
 
 def main():
@@ -17,7 +17,9 @@ def main():
         level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %(message)s"
     )
 
-    scraping_frequency = int(os.environ.get("SCRAPING_FREQUENCY_MINUTES", 60))
+    SCRAPING_FREQUENCY_MINUTES = int(os.environ.get("SCRAPING_FREQUENCY_MINUTES", 60))
+    SCRAPING_PAGE_LIMIT = int(os.environ.get("PAGE_COUNT", 1))
+
     base_url = "https://www.fillaritori.com/forum/54-maantie/page/{}/?filterByState=8"
 
     logging.info("Opening sqlalchemy session to sqlite...")
@@ -27,8 +29,8 @@ def main():
 
     logging.info("Database connected")
 
-    # Base.metadata.drop_all(engine)
-
+    Base.metadata.drop_all(engine)
+    logging.info("Database schema dropped")
     Base.metadata.create_all(engine)
     logging.info("Database schema created")
 
@@ -36,7 +38,7 @@ def main():
         while True:
             logging.info("Scraping cycle started")
 
-            listing_urls = find_listings_for_category(base_url, pages=8)
+            listing_urls = find_listings_for_category(base_url, pages=SCRAPING_PAGE_LIMIT)
             logging.debug("Found {} listings".format(len(listing_urls)))
 
             listings: Iterable[BikeListingData] = [
@@ -49,10 +51,10 @@ def main():
 
             logging.info(
                 "Scraping cycle completed, sleeping for {} minutes".format(
-                    scraping_frequency
+                    SCRAPING_FREQUENCY_MINUTES
                 )
             )
-            sleep(scraping_frequency * 60)
+            sleep(SCRAPING_FREQUENCY_MINUTES * 60)
     except Exception as e:
         logging.error(f"An error occurred: {e}")
     finally:
