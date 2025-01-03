@@ -6,7 +6,7 @@ services:
         environment:
             SCRAPING_FREQUENCY_MINUTES: 60
         volumes:
-            - ./data:/app/data
+            - ../data:/app/data
 
     backend:
         build:
