@@ -77,11 +77,29 @@ def parse_raw_title(soup):
 
 
 def parse_price(price_str):
-    # TODO: Handle thousands separator correctly
-    match = re.search(r"\d+", price_str)
-    if match:
-        return int(match.group())
-    return None
+    """
+    Parses a price string and returns the integer value.
+    - Removes non-numeric characters except commas and periods.
+    - Replaces commas with periods if they are used as decimal separators.
+    - Checks if the last separator is a decimal point with exactly two digits after it.
+    - Treats all separators as thousand separators if the above condition is not met.
+    - Returns None if the conversion fails.
+    """
+    clean_str = re.sub(r"[^\d,\.]", "", price_str)
+    if "," in clean_str and "." not in clean_str:
+        clean_str = clean_str.replace(",", ".")
+    if "." in clean_str:
+        parts = clean_str.split(".")
+        if len(parts[-1]) == 2:
+            clean_str = clean_str.replace(",", "")
+        else:
+            clean_str = clean_str.replace(".", "").replace(",", "")
+    else:
+        clean_str = clean_str.replace(",", "")
+    try:
+        return int(float(clean_str))
+    except ValueError:
+        return None
 
 
 def parse_date_posted(soup):
