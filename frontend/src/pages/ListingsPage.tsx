@@ -25,38 +25,21 @@ function ListingsPage() {
 
     return (
         <>
-            <div style={{ display: "flex", justifyContent: "center" }}>
-                <div
-                    style={{
-                        maxWidth: "900px",
-                        margin: "0 auto",
-                        padding: "1rem",
-                        display: "flex",
-                        flexDirection: "row",
-                        gap: "1rem",
-                    }}
-                >
-                    <div>
-                        <Card>
-                            <CardHeader>
-                                <h2 className="font-bold text-3xl">Filter</h2>
-                            </CardHeader>
-                            <CardContent>
-                                <FilterForm />
-                            </CardContent>
-                        </Card>
-                    </div>
-                    <div
-                        style={{
-                            display: "grid",
-                            gridTemplateColumns: "repeat(3, 1fr)",
-                            gap: "1rem",
-                        }}
-                    >
-                        {listings.map((listing) => (
-                            <ListingCard key={listing.id} listing={listing} />
-                        ))}
-                    </div>
+            <div className="max-w-[900px] mx-auto p-4 flex flex-row gap-4">
+                <div>
+                    <Card>
+                        <CardHeader>
+                            <h2 className="font-bold text-3xl">Filter</h2>
+                        </CardHeader>
+                        <CardContent>
+                            <FilterForm />
+                        </CardContent>
+                    </Card>
+                </div>
+                <div className="grid grid-cols-[repeat(3,1fr)] gap-4">
+                    {listings.map((listing) => (
+                        <ListingCard key={listing.id} listing={listing} />
+                    ))}
                 </div>
             </div>
         </>
