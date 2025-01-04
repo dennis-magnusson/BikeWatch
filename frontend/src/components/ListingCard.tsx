@@ -28,7 +28,7 @@ function ListingCard({ listing }: ListingCardProps) {
     };
 
     return (
-        <Card className="w-[350px]">
+        <Card className="max-w-[330px]">
             <div className="space-y-2">
                 <div className="relative w-full h-48 overflow-hidden">
                     <img
@@ -41,13 +41,13 @@ function ListingCard({ listing }: ListingCardProps) {
                     </Badge>
                     <button
                         onClick={handlePrevImage}
-                        className="absolute top-1/2 left-2 transform -translate-y-1/2 bg-white p-1 rounded-full"
+                        className="absolute top-1/2 left-2 transform -translate-y-1/2 bg-white p-1 rounded-full opacity-40"
                     >
                         <ChevronLeft />
                     </button>
                     <button
                         onClick={handleNextImage}
-                        className="absolute top-1/2 right-2 transform -translate-y-1/2 bg-white p-1 rounded-full"
+                        className="absolute top-1/2 right-2 transform -translate-y-1/2 bg-white p-1 rounded-full opacity-40"
                     >
                         <ChevronRight />
                     </button>
