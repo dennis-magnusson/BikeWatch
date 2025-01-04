@@ -1,10 +1,20 @@
-from fastapi import FastAPI, Depends
-
+from fastapi import Depends, FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, Session
+from sqlalchemy.orm import Session, sessionmaker
 from sqlalchemy.sql.expression import text
 
 app = FastAPI()
+
+origins = ["*"]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 DATABASE_URL = "sqlite:///data/bikes.db"
 
@@ -23,7 +33,7 @@ def get_db():
 @app.get("/listings/")
 def get_listings(db=Depends(get_db)):
     query = """
-    SELECT bikes.id, bikes.title, bikes.url, bike_images.image_url, bikes.date_last_updated, bikes.date_posted, bikes.region, bikes.city, bikes.price
+    SELECT bikes.id, bikes.title, bikes.url, bike_images.image_url, bikes.date_last_updated, bikes.date_posted, bikes.region, bikes.city, bikes.price, bikes.size, bikes.description
     FROM bikes
     LEFT JOIN bike_images ON bikes.id = bike_images.bike_id
     """
@@ -43,6 +53,8 @@ def get_listings(db=Depends(get_db)):
                 "region": row[6],
                 "city": row[7],
                 "price": row[8],
+                "size": row[9],
+                "description": row[10],
             }
         listings[bike_id]["images"].append(row[3])
 
