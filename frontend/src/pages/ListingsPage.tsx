@@ -8,8 +8,6 @@ function ListingsPage() {
     const [listings, setListings] = useState<Listing[]>([]);
     const [sortBy, setSortBy] = useState<string>("price_low-high");
 
-    console.log(sortBy);
-
     useEffect(() => {
         const fetchListings = async () => {
             try {
