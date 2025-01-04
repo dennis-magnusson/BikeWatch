@@ -8,20 +8,14 @@ import { Label } from "./ui/label";
 function FilterForm() {
     return (
         <>
-            <div
-                style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    minWidth: "280px",
-                }}
-            >
+            <div className="flex flex-col min-w-[280px]">
                 <FormInput>
                     <Label htmlFor="city">Location</Label>
                     <SearchableMultiselect />
                 </FormInput>
 
                 <FormInput>
-                    <Label htmlFor="">Price</Label>
+                    <Label htmlFor="minPrice maxPrice">Price</Label>
                     <MinMaxInput unit="€" />
                 </FormInput>
                 {/* <FormInput>
