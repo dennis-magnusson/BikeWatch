@@ -1,10 +1,9 @@
 from datetime import datetime
 from typing import List, Optional
 
+from pydantic import BaseModel
 from sqlalchemy import DateTime, ForeignKey, func
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
-
-from pydantic import BaseModel
 
 
 class BikeListingBase(BaseModel):
@@ -111,7 +110,7 @@ class BikeListing(Base):
     model: Mapped[str] = mapped_column(nullable=True)
     year: Mapped[str] = mapped_column(nullable=True)
     size: Mapped[str] = mapped_column(nullable=True)
-    price: Mapped[str] = mapped_column(nullable=True)
+    price: Mapped[float] = mapped_column(nullable=True)
     city: Mapped[str] = mapped_column(nullable=True)
     region: Mapped[str] = mapped_column(nullable=True)
     description: Mapped[str] = mapped_column(nullable=True)
