@@ -1,8 +1,9 @@
-from fastapi import Depends, FastAPI
+from fastapi import Depends, FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
-from sqlalchemy import create_engine
-from sqlalchemy.orm import Session, sessionmaker
-from sqlalchemy.sql.expression import text
+from sqlalchemy import create_engine, func
+from sqlalchemy.orm import Session, joinedload, sessionmaker
+
+from common.models import BikeListing
 
 app = FastAPI()
 
@@ -31,35 +32,34 @@ def get_db():
 
 
 @app.get("/listings/")
-def get_listings(db=Depends(get_db)):
-    query = """
-    SELECT bikes.id, bikes.title, bikes.url, bike_images.image_url, bikes.date_last_updated, bikes.date_posted, bikes.region, bikes.city, bikes.price, bikes.size, bikes.description
-    FROM bikes
-    LEFT JOIN bike_images ON bikes.id = bike_images.bike_id
-    """
-    result = db.execute(text(query)).fetchall()
+def get_listings(
+    db=Depends(get_db),
+    minPrice: int = Query(None),
+    maxPrice: int = Query(None),
+    city: str = Query(None),
+    region: str = Query(None)
+):
+    if minPrice is not None and maxPrice is not None and maxPrice < minPrice:
+        raise HTTPException(status_code=400, detail="maxPrice cannot be smaller than minPrice")
+    
+    print(f"{minPrice=}, {maxPrice=}, {city=}, {region=}")
+    query = db.query(BikeListing).options(joinedload(BikeListing.images))
 
-    listings = {}
-    for row in result:
-        bike_id = row[0]
-        if bike_id not in listings:
-            listings[bike_id] = {
-                "id": bike_id,
-                "title": row[1],
-                "url": row[2],
-                "images": [],
-                "last_updated": row[4],
-                "originally_posted": row[5],
-                "region": row[6],
-                "city": row[7],
-                "price": row[8],
-                "size": row[9],
-                "description": row[10],
-            }
-        listings[bike_id]["images"].append(row[3])
+    # Apply filters dynamically
+    if minPrice is not None:
+        query = query.filter(BikeListing.price >= minPrice)
+    if maxPrice is not None:
+        query = query.filter(BikeListing.price <= maxPrice)
+    if city is not None:
+        query = query.filter(func.lower(BikeListing.city) == city.lower())
+    if region is not None:
+        query = query.filter(func.lower(BikeListing.region) == region.lower())
 
-    return list(listings.values())
+    # Execute query
+    results = query.all()
 
+
+    return results
 
 if __name__ == "__main__":
     import uvicorn
