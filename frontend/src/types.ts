@@ -1,5 +1,5 @@
 interface Location {
-    value: `city:${string}` | `region:${string}`;
+    value: `city_${string}` | `region_${string}`;
     label: string;
 }
 

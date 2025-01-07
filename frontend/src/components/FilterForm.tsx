@@ -57,8 +57,12 @@ function FilterForm({
                                 setSelectedValues={setCityOrLocation}
                                 locations={[
                                     {
-                                        value: "city:helsinki",
+                                        value: "city_helsinki",
                                         label: "Helsinki",
+                                    },
+                                    {
+                                        value: "region_uusimaa",
+                                        label: "Uusimaa",
                                     },
                                 ]}
                             />

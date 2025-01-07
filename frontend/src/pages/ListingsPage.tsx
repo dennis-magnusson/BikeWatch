@@ -42,11 +42,11 @@ function ListingsPage() {
             params.append("minPrice", minPrice.toString());
         }
 
-        // if (cityOrLocation.length > 0) {
-        //     cityOrLocation.forEach((loc) => {
-        //         params.append("locations", loc);
-        //     });
-        // }
+        if (cityOrLocation.length > 0) {
+            cityOrLocation.forEach((loc) => {
+                params.append("locations", loc);
+            });
+        }
 
         // if (keywords.length > 0) {
         //     keywords.forEach((keyword) => {
