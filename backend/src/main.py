@@ -1,3 +1,5 @@
+from typing import List
+
 from fastapi import Depends, FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import create_engine, func
@@ -36,13 +38,12 @@ def get_listings(
     db=Depends(get_db),
     minPrice: int = Query(None),
     maxPrice: int = Query(None),
-    city: str = Query(None),
-    region: str = Query(None)
+    location: List[str] = Query(None),
 ):
     if minPrice is not None and maxPrice is not None and maxPrice < minPrice:
         raise HTTPException(status_code=400, detail="maxPrice cannot be smaller than minPrice")
     
-    print(f"{minPrice=}, {maxPrice=}, {city=}, {region=}")
+    print(f"{minPrice=}, {maxPrice=}")
     query = db.query(BikeListing).options(joinedload(BikeListing.images))
 
     # Apply filters dynamically
@@ -50,16 +51,35 @@ def get_listings(
         query = query.filter(BikeListing.price >= minPrice)
     if maxPrice is not None:
         query = query.filter(BikeListing.price <= maxPrice)
-    if city is not None:
-        query = query.filter(func.lower(BikeListing.city) == city.lower())
-    if region is not None:
-        query = query.filter(func.lower(BikeListing.region) == region.lower())
+    if location:
+        for location in location:
+            if location.startswith("city_"):
+                city_name = location[len("city_"):].lower()
+                query = query.filter(func.lower(BikeListing.city) == city_name)
+            elif location.startswith("region_"):
+                region_name = location[len("region_"):].lower()
+                query = query.filter(func.lower(BikeListing.region) == region_name)
 
     # Execute query
     results = query.all()
 
 
     return results
+
+@app.get("/locations/")
+def get_locations(db=Depends(get_db)):
+    cities = db.query(BikeListing.city).distinct().all()
+    regions = db.query(BikeListing.region).distinct().all()
+
+    locations = []
+    for city in cities:
+        locations.append({"value": f"city_{city[0].lower()}", "label": city[0]})
+    for region in regions:
+        locations.append({"value": f"region_{region[0].lower()}", "label": region[0]})
+
+    locations = sorted(locations, key=lambda x: x["label"] != "Uusimaa") # Sort Uusimaa first always
+
+    return locations
 
 if __name__ == "__main__":
     import uvicorn
