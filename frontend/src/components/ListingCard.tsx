@@ -1,3 +1,4 @@
+import { formatDistanceToNow } from "date-fns";
 import { Listing } from "../types";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 
@@ -6,7 +7,7 @@ import * as React from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { CardFooter } from "@/components/ui/card";
-import { ChevronLeft, ChevronRight, ExternalLink, MapPin } from "lucide-react"; // Import carousel icons
+import { ChevronLeft, ChevronRight, MapPin } from "lucide-react";
 
 type ListingCardProps = {
     listing: Listing;
@@ -27,50 +28,66 @@ function ListingCard({ listing }: ListingCardProps) {
         );
     };
 
+    const formattedDatePosted = formatDistanceToNow(
+        new Date(listing.date_posted),
+        { addSuffix: true }
+    );
+
+    const hasImages = listing.images.length > 0;
+    const displayImage = hasImages
+        ? listing.images[selectedImage].image_url
+        : "https://placehold.co/1440x1080";
+
     return (
         <Card className="w-[300px] mx-auto overflow-hidden flex flex-col">
             <div className="space-y-2">
                 <div className="relative w-full h-44">
                     <img
-                        src={listing.images[selectedImage]}
+                        src={displayImage}
                         alt={`Bike image ${selectedImage + 1}`}
                         className="object-cover w-full h-full"
                     />
                     <Badge className="absolute top-2 right-2 text-lg font-bold">
                         {listing.price}€
                     </Badge>
-                    <button
-                        onClick={handlePrevImage}
-                        className="absolute top-1/2 left-2 transform -translate-y-1/2 bg-white p-1 rounded-full opacity-40 hover:opacity-80 transition-opacity"
-                    >
-                        <ChevronLeft className="h-6 w-6" />
-                    </button>
-                    <button
-                        onClick={handleNextImage}
-                        className="absolute top-1/2 right-2 transform -translate-y-1/2 bg-white p-1 rounded-full opacity-40 hover:opacity-80 transition-opacity"
-                    >
-                        <ChevronRight className="h-6 w-6" />
-                    </button>
+                    {hasImages && (
+                        <>
+                            <button
+                                onClick={handlePrevImage}
+                                className="absolute top-1/2 left-2 transform -translate-y-1/2 bg-white p-1 rounded-full opacity-40 hover:opacity-80 transition-opacity"
+                            >
+                                <ChevronLeft className="h-6 w-6" />
+                            </button>
+                            <button
+                                onClick={handleNextImage}
+                                className="absolute top-1/2 right-2 transform -translate-y-1/2 bg-white p-1 rounded-full opacity-40 hover:opacity-80 transition-opacity"
+                            >
+                                <ChevronRight className="h-6 w-6" />
+                            </button>
+                        </>
+                    )}
                 </div>
-                <div className="flex justify-center space-x-2 mt-1 px-1 py-1 overflow-x-auto">
-                    {listing.images.map((image, index) => (
-                        <button
-                            key={index}
-                            onClick={() => setSelectedImage(index)}
-                            className={`w-16 h-12 relative overflow-hidden rounded border-none ${
-                                index === selectedImage
-                                    ? "ring-2 ring-primary"
-                                    : ""
-                            }`}
-                        >
-                            <img
-                                src={image}
-                                alt={`Thumbnail ${index + 1}`}
-                                className="object-cover absolute inset-0 w-full h-full"
-                            />
-                        </button>
-                    ))}
-                </div>
+                {hasImages && (
+                    <div className="flex justify-center space-x-2 mt-1 px-1 py-1 overflow-x-auto">
+                        {listing.images.map((image, index) => (
+                            <button
+                                key={index}
+                                onClick={() => setSelectedImage(index)}
+                                className={`w-16 h-12 relative overflow-hidden rounded border-none ${
+                                    index === selectedImage
+                                        ? "ring-2 ring-primary"
+                                        : ""
+                                }`}
+                            >
+                                <img
+                                    src={image.image_url}
+                                    alt={`Thumbnail ${index + 1}`}
+                                    className="object-cover absolute inset-0 w-full h-full"
+                                />
+                            </button>
+                        ))}
+                    </div>
+                )}
             </div>
             <CardHeader className="py-3">
                 <CardTitle className="text-xl">{listing.title}</CardTitle>
@@ -83,6 +100,7 @@ function ListingCard({ listing }: ListingCardProps) {
                 <Badge className="text-md" variant="outline">
                     Size: {listing.size}
                 </Badge>
+                <p className="text-sm mt-2">{formattedDatePosted}</p>
             </CardContent>
             <CardFooter className="mt-auto pt-0">
                 <Button variant="outline" className="w-full" asChild>
@@ -92,7 +110,6 @@ function ListingCard({ listing }: ListingCardProps) {
                         rel="noopener noreferrer"
                     >
                         View on fillaritori.com{" "}
-                        <ExternalLink className="ml-2 h-4 w-4" />
                     </a>
                 </Button>
             </CardFooter>

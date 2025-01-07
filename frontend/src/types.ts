@@ -1,13 +1,26 @@
-interface Listing {
+interface Image {
+    bike_id: string;
+    image_url: string;
     id: number;
-    title: string;
-    city: string;
-    region: string;
-    price: number;
-    url: string;
-    description: string;
-    size: string;
-    images: string[];
 }
 
-export type { Listing };
+interface Listing {
+    id: string;
+    title: string;
+    url: string;
+    brand: string;
+    model: string;
+    year: number | null;
+    price: number;
+    region: string;
+    city: string;
+    size: string;
+    description: string;
+    short_description: string | null;
+    date_posted: string;
+    date_last_updated: string;
+    date_first_seen: string;
+    images: Image[];
+}
+
+export type { Image, Listing };
