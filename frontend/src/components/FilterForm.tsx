@@ -10,9 +10,30 @@ import { Label } from "./ui/label";
 type FilterFormProps = {
     sortBy: string;
     setSortBy: React.Dispatch<React.SetStateAction<string>>;
+    maxPrice: number;
+    setMaxPrice: React.Dispatch<React.SetStateAction<number>>;
+    minPrice: number;
+    setMinPrice: React.Dispatch<React.SetStateAction<number>>;
+    cityOrLocation: string[];
+    setCityOrLocation: React.Dispatch<React.SetStateAction<string[]>>;
+    keywords: string[];
+    setKeywords: React.Dispatch<React.SetStateAction<string[]>>;
+    updateFilters: () => void;
 };
 
-function FilterForm({ sortBy, setSortBy }: FilterFormProps) {
+function FilterForm({
+    sortBy,
+    setSortBy,
+    maxPrice,
+    setMaxPrice,
+    minPrice,
+    setMinPrice,
+    cityOrLocation,
+    setCityOrLocation,
+    keywords,
+    setKeywords,
+    updateFilters,
+}: FilterFormProps) {
     return (
         <>
             <Card>
@@ -31,23 +52,43 @@ function FilterForm({ sortBy, setSortBy }: FilterFormProps) {
 
                         <FormInput>
                             <Label htmlFor="city">Location</Label>
-                            <SearchableMultiselect />
+                            <SearchableMultiselect
+                                selectedValues={cityOrLocation}
+                                setSelectedValues={setCityOrLocation}
+                                locations={[
+                                    {
+                                        value: "city:helsinki",
+                                        label: "Helsinki",
+                                    },
+                                ]}
+                            />
                         </FormInput>
 
                         <FormInput>
                             <Label htmlFor="minPrice maxPrice">Price</Label>
-                            <MinMaxInput unit="€" />
+                            <MinMaxInput
+                                unit="€"
+                                minPrice={minPrice}
+                                setMinPrice={setMinPrice}
+                                maxPrice={maxPrice}
+                                setMaxPrice={setMaxPrice}
+                            />
                         </FormInput>
 
                         <FormInput>
                             <Label htmlFor="Custom keywords">
                                 Custom keywords
                             </Label>
-                            <KeywordAdder />
+                            <KeywordAdder
+                                keywords={keywords}
+                                setKeywords={setKeywords}
+                            />
                         </FormInput>
 
                         <FormInput>
-                            <Button>Update filters</Button>
+                            <Button onClick={updateFilters}>
+                                Update filters
+                            </Button>
                         </FormInput>
                     </div>
                 </CardContent>

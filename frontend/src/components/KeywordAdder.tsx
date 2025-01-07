@@ -1,12 +1,16 @@
 import { X } from "lucide-react";
 import * as React from "react";
 
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Badge } from "./ui/badge";
+import { Button } from "./ui/button";
+import { Input } from "./ui/input";
 
-function KeywordAdder() {
-    const [keywords, setKeywords] = React.useState<string[]>([]);
+type KeywordAdderProps = {
+    keywords: string[];
+    setKeywords: React.Dispatch<React.SetStateAction<string[]>>;
+};
+
+function KeywordAdder({ keywords, setKeywords }: KeywordAdderProps) {
     const [inputValue, setInputValue] = React.useState("");
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {

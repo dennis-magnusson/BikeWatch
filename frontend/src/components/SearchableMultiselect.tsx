@@ -1,8 +1,10 @@
 import { Check, MapPin, X } from "lucide-react";
 import * as React from "react";
 
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { cn } from ".././lib/utils";
+import { Location } from "../types";
+import { Badge } from "./ui/badge";
+import { Button } from "./ui/button";
 import {
     Command,
     CommandEmpty,
@@ -10,40 +12,21 @@ import {
     CommandInput,
     CommandItem,
     CommandList,
-} from "@/components/ui/command";
-import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from "@/components/ui/popover";
-import { cn } from "@/lib/utils";
+} from "./ui/command";
+import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 
-const frameworks = [
-    {
-        value: "region:uusimaa",
-        label: "Uusimaa",
-    },
-    {
-        value: "city:savonlinna",
-        label: "Savonlinna",
-    },
-    {
-        value: "city:Helsinki",
-        label: "Helsinki",
-    },
-    {
-        value: "city:vantaa",
-        label: "Vantaa",
-    },
-    {
-        value: "region:pirkanmaa",
-        label: "Pirkanmaa",
-    },
-];
+type SearchableMultiselectProps = {
+    locations: Location[];
+    selectedValues: string[];
+    setSelectedValues: React.Dispatch<React.SetStateAction<string[]>>;
+};
 
-function SearchableMultiselect() {
+function SearchableMultiselect({
+    selectedValues,
+    setSelectedValues,
+    locations,
+}: SearchableMultiselectProps) {
     const [open, setOpen] = React.useState(false);
-    const [selectedValues, setSelectedValues] = React.useState<string[]>([]);
 
     const handleSelect = (currentValue: string) => {
         setSelectedValues((prev) =>
@@ -84,18 +67,18 @@ function SearchableMultiselect() {
                         <CommandList>
                             <CommandEmpty>No locations found</CommandEmpty>
                             <CommandGroup>
-                                {frameworks.map((framework) => (
+                                {locations.map((location) => (
                                     <CommandItem
-                                        key={framework.value}
-                                        value={framework.value}
+                                        key={location.value}
+                                        value={location.value}
                                         onSelect={handleSelect}
                                     >
-                                        {framework.label}
+                                        {location.label}
                                         <Check
                                             className={cn(
                                                 "ml-auto h-4 w-4",
                                                 selectedValues.includes(
-                                                    framework.value
+                                                    location.value
                                                 )
                                                     ? "opacity-100"
                                                     : "opacity-0"
@@ -110,7 +93,7 @@ function SearchableMultiselect() {
             </Popover>
             <div className="flex flex-wrap gap-2">
                 {selectedValues.map((value) => {
-                    const framework = frameworks.find((f) => f.value === value);
+                    const framework = locations.find((l) => l.value === value);
                     return (
                         <Badge key={value} variant="secondary">
                             {framework?.label}
