@@ -2,18 +2,21 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import FilterForm from "../components/FilterForm";
 import ListingCard from "../components/ListingCard";
-import { Listing } from "../types";
+import { Listing, Location } from "../types";
 
 function ListingsPage() {
     const [listings, setListings] = useState<Listing[]>([]);
+    const [locations, setLocations] = useState<Location[]>([]);
+
     const [sortBy, setSortBy] = useState<string>("price_low-high");
     const [maxPrice, setMaxPrice] = useState<number>(0);
     const [minPrice, setMinPrice] = useState<number>(0);
-    const [cityOrLocation, setCityOrLocation] = useState<string[]>([]);
+    const [locationFilters, setLocationFilters] = useState<Location[]>([]);
     const [keywords, setKeywords] = useState<string[]>([]);
 
     useEffect(() => {
         fetchListings();
+        fetchLocations();
     }, []);
 
     const fetchListings = async () => {
@@ -24,6 +27,16 @@ function ListingsPage() {
             setListings(response.data);
         } catch (error) {
             console.error("Error fetching listings: ", error);
+        }
+    };
+
+    const fetchLocations = async () => {
+        try {
+            const url = "http://127.0.0.1:8000/locations";
+            const response = await axios.get(url);
+            setLocations(response.data);
+        } catch (error) {
+            console.error("Error fetching locations: ", error);
         }
     };
 
@@ -42,9 +55,14 @@ function ListingsPage() {
             params.append("minPrice", minPrice.toString());
         }
 
-        if (cityOrLocation.length > 0) {
-            cityOrLocation.forEach((loc) => {
-                params.append("locations", loc);
+        if (locationFilters.length > 0) {
+            locationFilters.forEach((loc) => {
+                if (loc.locationType === "city") {
+                    params.append("city", loc.name);
+                } else {
+                    // starts with "region_"
+                    params.append("region", loc.name);
+                }
             });
         }
 
@@ -74,8 +92,9 @@ function ListingsPage() {
                         setMaxPrice={setMaxPrice}
                         minPrice={minPrice}
                         setMinPrice={setMinPrice}
-                        cityOrLocation={cityOrLocation}
-                        setCityOrLocation={setCityOrLocation}
+                        locations={locations}
+                        locationFilters={locationFilters}
+                        setLocationFilters={setLocationFilters}
                         keywords={keywords}
                         setKeywords={setKeywords}
                         updateFilters={fetchListings}

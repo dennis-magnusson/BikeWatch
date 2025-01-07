@@ -1,3 +1,4 @@
+import { Location } from "../types";
 import FormInput from "./FormInput";
 import KeywordAdder from "./KeywordAdder";
 import MinMaxInput from "./MinMaxInput";
@@ -14,8 +15,9 @@ type FilterFormProps = {
     setMaxPrice: React.Dispatch<React.SetStateAction<number>>;
     minPrice: number;
     setMinPrice: React.Dispatch<React.SetStateAction<number>>;
-    cityOrLocation: string[];
-    setCityOrLocation: React.Dispatch<React.SetStateAction<string[]>>;
+    locations: Location[];
+    locationFilters: Location[];
+    setLocationFilters: React.Dispatch<React.SetStateAction<Location[]>>;
     keywords: string[];
     setKeywords: React.Dispatch<React.SetStateAction<string[]>>;
     updateFilters: () => void;
@@ -28,8 +30,9 @@ function FilterForm({
     setMaxPrice,
     minPrice,
     setMinPrice,
-    cityOrLocation,
-    setCityOrLocation,
+    locations,
+    locationFilters,
+    setLocationFilters,
     keywords,
     setKeywords,
     updateFilters,
@@ -53,18 +56,9 @@ function FilterForm({
                         <FormInput>
                             <Label htmlFor="city">Location</Label>
                             <SearchableMultiselect
-                                selectedValues={cityOrLocation}
-                                setSelectedValues={setCityOrLocation}
-                                locations={[
-                                    {
-                                        value: "city_helsinki",
-                                        label: "Helsinki",
-                                    },
-                                    {
-                                        value: "region_uusimaa",
-                                        label: "Uusimaa",
-                                    },
-                                ]}
+                                locationFilters={locationFilters}
+                                setLocationFilters={setLocationFilters}
+                                locations={locations}
                             />
                         </FormInput>
 

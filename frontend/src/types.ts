@@ -1,6 +1,6 @@
 interface Location {
-    value: `city_${string}` | `region_${string}`;
-    label: string;
+    locationType: "city" | "region";
+    name: string;
 }
 
 interface Image {

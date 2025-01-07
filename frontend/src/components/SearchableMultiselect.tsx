@@ -17,28 +17,30 @@ import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 
 type SearchableMultiselectProps = {
     locations: Location[];
-    selectedValues: string[];
-    setSelectedValues: React.Dispatch<React.SetStateAction<string[]>>;
+    locationFilters: Location[];
+    setLocationFilters: React.Dispatch<React.SetStateAction<Location[]>>;
 };
 
 function SearchableMultiselect({
-    selectedValues,
-    setSelectedValues,
+    locationFilters,
+    setLocationFilters,
     locations,
 }: SearchableMultiselectProps) {
     const [open, setOpen] = React.useState(false);
 
-    const handleSelect = (currentValue: string) => {
-        setSelectedValues((prev) =>
-            prev.includes(currentValue)
-                ? prev.filter((value) => value !== currentValue)
-                : [...prev, currentValue]
-        );
+    const handleSelect = (currentLocation: Location) => {
+        if (currentLocation) {
+            setLocationFilters((prev) =>
+                prev.includes(currentLocation)
+                    ? prev.filter((value) => value !== currentLocation)
+                    : [...prev, currentLocation]
+            );
+        }
     };
 
-    const handleRemove = (valueToRemove: string) => {
-        setSelectedValues((prev) =>
-            prev.filter((value) => value !== valueToRemove)
+    const handleRemove = (locationToRemove: Location) => {
+        setLocationFilters((prev) =>
+            prev.filter((value) => value !== locationToRemove)
         );
     };
 
@@ -52,8 +54,8 @@ function SearchableMultiselect({
                         aria-expanded={open}
                         className="w-[200px] justify-between"
                     >
-                        {selectedValues.length > 0
-                            ? `${selectedValues.length} selected`
+                        {locationFilters.length > 0
+                            ? `${locationFilters.length} selected`
                             : "Filter by location"}
                         <MapPin className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                     </Button>
@@ -69,16 +71,16 @@ function SearchableMultiselect({
                             <CommandGroup>
                                 {locations.map((location) => (
                                     <CommandItem
-                                        key={location.value}
-                                        value={location.value}
-                                        onSelect={handleSelect}
+                                        key={location.name}
+                                        value={location.name}
+                                        onSelect={() => handleSelect(location)}
                                     >
-                                        {location.label}
+                                        {location.name}
                                         <Check
                                             className={cn(
                                                 "ml-auto h-4 w-4",
-                                                selectedValues.includes(
-                                                    location.value
+                                                locationFilters.includes(
+                                                    location
                                                 )
                                                     ? "opacity-100"
                                                     : "opacity-0"
@@ -92,16 +94,16 @@ function SearchableMultiselect({
                 </PopoverContent>
             </Popover>
             <div className="flex flex-wrap gap-2">
-                {selectedValues.map((value) => {
-                    const framework = locations.find((l) => l.value === value);
+                {locationFilters.map((loc) => {
+                    const location = locations.find((l) => l === loc);
                     return (
-                        <Badge key={value} variant="secondary">
-                            {framework?.label}
+                        <Badge key={loc.name} variant="secondary">
+                            {location?.name}
                             <Button
                                 variant="ghost"
                                 size="sm"
                                 className="ml-1 h-auto p-0 text-muted-foreground hover:bg-transparent hover:text-foreground"
-                                onClick={() => handleRemove(value)}
+                                onClick={() => handleRemove(loc)}
                             >
                                 <X className="h-3 w-3" />
                                 <span className="sr-only">Remove</span>
