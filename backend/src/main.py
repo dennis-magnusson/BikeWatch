@@ -56,7 +56,7 @@ def get_listings(
             if location.startswith("city_"):
                 city_name = location[len("city_"):].lower()
                 query = query.filter(func.lower(BikeListing.city) == city_name)
-            elif location.startswith("region_"):
+            else: # location.startswith("region_") is True
                 region_name = location[len("region_"):].lower()
                 query = query.filter(func.lower(BikeListing.region) == region_name)
 
