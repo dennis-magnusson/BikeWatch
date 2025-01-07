@@ -1,3 +1,8 @@
+interface Location {
+    value: `city:${string}` | `region:${string}`;
+    label: string;
+}
+
 interface Image {
     bike_id: string;
     image_url: string;
@@ -23,4 +28,4 @@ interface Listing {
     images: Image[];
 }
 
-export type { Image, Listing };
+export type { Image, Listing, Location };
