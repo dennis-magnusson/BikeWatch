@@ -1,13 +1,18 @@
 import { formatDistanceToNow } from "date-fns";
 import { Listing } from "../types";
-import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 
 import * as React from "react";
 
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { CardFooter } from "@/components/ui/card";
 import { ChevronLeft, ChevronRight, MapPin } from "lucide-react";
+import { Badge } from "./ui/badge";
+import { Button } from "./ui/button";
+import {
+    Card,
+    CardContent,
+    CardFooter,
+    CardHeader,
+    CardTitle,
+} from "./ui/card";
 
 type ListingCardProps = {
     listing: Listing;
