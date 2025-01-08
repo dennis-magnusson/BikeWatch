@@ -16,7 +16,7 @@ function SortBySelect({ sortBy, setSortBy }: SortBySelectProps) {
     return (
         <>
             <Select value={sortBy} onValueChange={setSortBy}>
-                <SelectTrigger className="w-[180px]">
+                <SelectTrigger className="w-full">
                     <SelectValue />
                 </SelectTrigger>
                 <SelectContent>

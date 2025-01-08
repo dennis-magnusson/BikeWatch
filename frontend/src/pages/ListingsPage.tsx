@@ -83,8 +83,8 @@ function ListingsPage() {
 
     return (
         <>
-            <div className="max-w-[900px] mx-auto p-4 flex flex-row gap-4">
-                <div className="flex flex-col gap-4">
+            <div className="flex flex-row gap-4 p-4 items-start justify-center">
+                <div className="max-w-[330px] w-full">
                     <FilterForm
                         sortBy={sortBy}
                         setSortBy={setSortBy}

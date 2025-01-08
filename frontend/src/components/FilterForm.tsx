@@ -44,7 +44,7 @@ function FilterForm({
                     <h2 className="font-bold text-3xl">Filter</h2>
                 </CardHeader>
                 <CardContent>
-                    <div className="flex flex-col min-w-[280px]">
+                    <div className="flex flex-col w-full">
                         <FormInput>
                             <Label htmlFor="sort">Sort by</Label>
                             <SortBySelect
