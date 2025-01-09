@@ -8,7 +8,7 @@ function ListingsPage() {
     const [listings, setListings] = useState<Listing[]>([]);
     const [locations, setLocations] = useState<Location[]>([]);
 
-    const [sortBy, setSortBy] = useState<string>("price_low-high");
+    const [sortBy, setSortBy] = useState<string>("newest");
     const [maxPrice, setMaxPrice] = useState<number>(0);
     const [minPrice, setMinPrice] = useState<number>(0);
     const [locationFilters, setLocationFilters] = useState<Location[]>([]);
@@ -18,6 +18,10 @@ function ListingsPage() {
         fetchListings();
         fetchLocations();
     }, []);
+
+    useEffect(() => {
+        fetchListings();
+    }, [sortBy]);
 
     const fetchListings = async () => {
         try {
@@ -43,9 +47,9 @@ function ListingsPage() {
     const formatUrlParams = () => {
         const params = new URLSearchParams();
 
-        // if (sortBy) {
-        //     params.append("sort", sortBy);
-        // }
+        if (sortBy) {
+            params.append("sortBy", sortBy);
+        }
 
         if (maxPrice) {
             params.append("maxPrice", maxPrice.toString());

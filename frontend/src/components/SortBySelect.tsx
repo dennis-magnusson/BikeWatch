@@ -21,16 +21,13 @@ function SortBySelect({ sortBy, setSortBy }: SortBySelectProps) {
                 </SelectTrigger>
                 <SelectContent>
                     <SelectGroup>
-                        <SelectItem value="price_low-high">
-                            Price: Low to High
-                        </SelectItem>
-                        <SelectItem value="price_high-low">
-                            Price: High to Low
-                        </SelectItem>
                         <SelectItem value="newest">Newest</SelectItem>
                         <SelectItem value="oldest">Oldest</SelectItem>
-                        <SelectItem value="most_popular">
-                            Most Popular
+                        <SelectItem value="price_inc">
+                            Price: Low to High
+                        </SelectItem>
+                        <SelectItem value="price_dec">
+                            Price: High to Low
                         </SelectItem>
                     </SelectGroup>
                 </SelectContent>

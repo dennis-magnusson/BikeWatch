@@ -40,6 +40,7 @@ def get_listings(
     maxPrice: int = Query(None),
     city: List[str] = Query(None),
     region: List[str] = Query(None),
+    sortBy: str = Query("newest")
 ):
     if minPrice is not None and maxPrice is not None and maxPrice < minPrice:
         raise HTTPException(status_code=400, detail="maxPrice cannot be smaller than minPrice")
@@ -59,6 +60,16 @@ def get_listings(
         if region:
             location_filters.extend([func.lower(BikeListing.region) == r.lower() for r in region])
         query = query.filter(or_(*location_filters))
+
+    # Apply sorting
+    if sortBy == "price_inc":
+        query = query.order_by(BikeListing.price.asc())
+    elif sortBy == "price_dec":
+        query = query.order_by(BikeListing.price.desc())
+    elif sortBy == "newest":
+        query = query.order_by(BikeListing.date_posted.desc())
+    elif sortBy == "oldest":
+        query = query.order_by(BikeListing.date_posted.asc())
 
     # Execute query
     results = query.all()
