@@ -43,6 +43,27 @@ function ListingCard({ listing }: ListingCardProps) {
         ? listing.images[selectedImage].image_url
         : "https://placehold.co/1440x1080";
 
+    const letterSizeString =
+        listing.letter_size_min === listing.letter_size_max
+            ? listing.letter_size_min
+            : listing.letter_size_min && listing.letter_size_max
+            ? `${listing.letter_size_min}-${listing.letter_size_max}`
+            : listing.letter_size_min || listing.letter_size_max || null;
+
+    const numberSizeString =
+        listing.number_size_min === listing.number_size_max
+            ? `${listing.number_size_min}cm`
+            : listing.number_size_min && listing.number_size_max
+            ? `${listing.number_size_min}-${listing.number_size_max}cm`
+            : listing.number_size_min || listing.number_size_max
+            ? `${listing.number_size_min || listing.number_size_max}cm`
+            : null;
+
+    const sizeString =
+        letterSizeString && numberSizeString
+            ? `${letterSizeString} / ${numberSizeString}`
+            : letterSizeString || numberSizeString || "?";
+
     return (
         <Card className="w-[300px] mx-auto overflow-hidden flex flex-col">
             <div className="space-y-2">
@@ -103,7 +124,7 @@ function ListingCard({ listing }: ListingCardProps) {
             </CardHeader>
             <CardContent className="pb-3">
                 <Badge className="text-md" variant="outline">
-                    Size: {listing.size}
+                    Size: {sizeString}
                 </Badge>
                 <p className="text-sm mt-2">{formattedDatePosted}</p>
             </CardContent>

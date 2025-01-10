@@ -19,7 +19,10 @@ interface Listing {
     price: number;
     region: string;
     city: string;
-    size: string;
+    number_size_min: string | null;
+    number_size_max: string | null;
+    letter_size_min: string | null;
+    letter_size_max: string | null;
     description: string;
     short_description: string | null;
     date_posted: string;
