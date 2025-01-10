@@ -1,5 +1,5 @@
-from typing import Iterable
 import logging
+from typing import Iterable
 
 from common.models import BikeImage, BikeListing, BikeListingData
 
@@ -23,7 +23,10 @@ def add_listing(session, listing_data: BikeListingData):
         year=listing_data.year,
         url=listing_data.url,
         date_posted=listing_data.date_posted,
-        size=listing_data.size,
+        letter_size_min=listing_data.letter_size_min,
+        letter_size_max=listing_data.letter_size_max,
+        number_size_min=listing_data.number_size_min,
+        number_size_max=listing_data.number_size_max,
         price=listing_data.price,
         city=listing_data.city,
         region=listing_data.region,

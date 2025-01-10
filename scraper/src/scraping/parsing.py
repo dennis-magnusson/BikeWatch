@@ -2,7 +2,7 @@ import logging
 import re
 from enum import Enum
 
-from scraper.src.scraping import parse_size
+from scraping.parse_size import parse_size
 
 keywords = {
     "size": ["koko", "rungon koko", "size", "frame size"],
@@ -24,7 +24,10 @@ def keyword_match(keywords, string):
 def parse_raw_description(soup):
     ps = [p.text for p in soup.find("article").find_all("p")]
 
-    size = None
+    letter_size_min = None
+    letter_size_max = None
+    number_size_min = None
+    number_size_max = None
     model = None
     brand = None
     city = None
@@ -53,8 +56,10 @@ def parse_raw_description(soup):
             raise IndexError(f"IndexError: {splitted}, p: {p}")
 
         if keyword_match(keywords["size"], key):
-            size = parse_size(val)
-            size = size.value if isinstance(size, parse_size.Size) else size
+            letter_size_min, letter_size_max, number_size_min, number_size_max = (
+                parse_size(val)
+            )
+
         elif keyword_match(keywords["model"], key):
             model = val
         elif keyword_match(keywords["brand"], key):
@@ -72,7 +77,20 @@ def parse_raw_description(soup):
         elif keyword_match(keywords["region"], key):
             region = val
 
-    return brand, model, price, year, size, region, city, description, short_description
+    return (
+        brand,
+        model,
+        price,
+        year,
+        number_size_min,
+        number_size_max,
+        letter_size_min,
+        letter_size_max,
+        region,
+        city,
+        description,
+        short_description,
+    )
 
 
 def parse_raw_title(soup):
@@ -105,7 +123,7 @@ def parse_price(price_str):
         return int(float(clean_str))
     except ValueError:
         return None
-    
+
 
 def parse_date_posted(soup):
     return soup.find("time")["datetime"]

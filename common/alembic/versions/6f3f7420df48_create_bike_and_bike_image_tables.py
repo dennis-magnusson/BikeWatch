@@ -1,17 +1,18 @@
 """create_bike_and_bike_image_tables
 
 Revision ID: 6f3f7420df48
-Revises: 
+Revises:
 Create Date: 2025-01-10 15:51:45.981226
 
 """
+
 from typing import Sequence, Union
 
 import sqlalchemy as sa
 from alembic import op
 
 # revision identifiers, used by Alembic.
-revision: str = '6f3f7420df48'
+revision: str = "6f3f7420df48"
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -44,5 +45,5 @@ def upgrade() -> None:
 
 
 def downgrade() -> None:
-    op.drop_table("bikes")
+    op.drop_table("bike")
     op.drop_table("bike_image")

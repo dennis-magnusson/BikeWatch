@@ -1,9 +1,18 @@
 from datetime import datetime
+from enum import Enum
 from typing import List, Optional
 
 from pydantic import BaseModel
 from sqlalchemy import DateTime, ForeignKey, func
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
+
+
+class Size(Enum):
+    XS = "XS"
+    S = "S"
+    M = "M"
+    L = "L"
+    XL = "XL"
 
 
 class BikeListingBase(BaseModel):
@@ -14,7 +23,10 @@ class BikeListingBase(BaseModel):
     year: Optional[int] = None
     url: str
     date_posted: Optional[str] = None
-    size: Optional[str] = None
+    number_size_min: Optional[float] = None
+    number_size_max: Optional[float] = None
+    letter_size_min: Optional[str] = None
+    letter_size_max: Optional[str] = None
     price: Optional[float] = None
     city: Optional[str] = None
     region: Optional[str] = None
@@ -36,7 +48,10 @@ class BikeListingData:
         year,
         url,
         date_posted,
-        size,
+        number_size_min,
+        number_size_max,
+        letter_size_min,
+        letter_size_max,
         images,
         price,
         city,
@@ -44,7 +59,6 @@ class BikeListingData:
         description,
         short_description,
     ):
-
         self.id = id
         self.title = title
         self.brand = brand
@@ -52,7 +66,10 @@ class BikeListingData:
         self.year = year
         self.url = url
         self.date_posted = date_posted
-        self.size = size
+        self.number_size_min = number_size_min
+        self.number_size_max = number_size_max
+        self.letter_size_min = letter_size_min
+        self.letter_size_max = letter_size_max
         self.images = images if images is not None else []
         self.price = price
         self.city = city
@@ -63,7 +80,9 @@ class BikeListingData:
     def __repr__(self):
         return (
             f"BikeListing(title={self.title!r}, url={self.url!r}, date_posted={self.date_posted!r}, "
-            f"size={self.size!r}, images={self.images!r}, city={self.city}, price={self.price!r}, "
+            f"number_size=[{self.number_size_min!r}:{self.letter_size_max!r}], "
+            f"letter_size=[{self.letter_size_min!r}:{self.letter_size_max!r}], "
+            f"images={self.images!r}, city={self.city}, price={self.price!r}, "
             f"description={self.description!r})"
         )
 
@@ -79,7 +98,10 @@ class BikeListingData:
             "year": self.year,
             "url": self.url,
             "date_posted": self.date_posted,
-            "size": self.size,
+            "number_size_max": self.number_size_max,
+            "number_size_min": self.number_size_min,
+            "letter_size_max": self.letter_size_max,
+            "letter_size_min": self.letter_size_min,
             "images": self.images,
             "price": self.price,
             "city": self.city,
@@ -92,8 +114,9 @@ class BikeListingData:
 class Base(DeclarativeBase):
     pass
 
+
 class BikeListing(Base):
-    __tablename__ = "bikes"
+    __tablename__ = "bike"
 
     id: Mapped[str] = mapped_column(primary_key=True)
     title: Mapped[str] = mapped_column(nullable=False)
@@ -102,7 +125,10 @@ class BikeListing(Base):
     brand: Mapped[str] = mapped_column(nullable=True)
     model: Mapped[str] = mapped_column(nullable=True)
     year: Mapped[str] = mapped_column(nullable=True)
-    size: Mapped[str] = mapped_column(nullable=True)
+    letter_size_min: Mapped[str] = mapped_column(nullable=True)
+    letter_size_max: Mapped[str] = mapped_column(nullable=True)
+    number_size_min: Mapped[float] = mapped_column(nullable=True)
+    number_size_max: Mapped[float] = mapped_column(nullable=True)
     price: Mapped[float] = mapped_column(nullable=True)
     city: Mapped[str] = mapped_column(nullable=True)
     region: Mapped[str] = mapped_column(nullable=True)
@@ -120,10 +146,10 @@ class BikeListing(Base):
 
 
 class BikeImage(Base):
-    __tablename__ = "bike_images"
+    __tablename__ = "bike_image"
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    bike_id: Mapped[str] = mapped_column(ForeignKey("bikes.id"), nullable=False)
+    bike_id: Mapped[str] = mapped_column(ForeignKey("bike.id"), nullable=False)
     image_url: Mapped[str] = mapped_column(nullable=False)
 
     bike = relationship("BikeListing", back_populates="images")

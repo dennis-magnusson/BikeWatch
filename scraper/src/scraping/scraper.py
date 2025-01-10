@@ -45,9 +45,20 @@ def scrape_listing(url: str) -> BikeListingData:
     id = get_listing_id(url)
     title = parse_raw_title(soup)
     date_posted = parse_date_posted(soup)
-    brand, model, price, year, size, region, city, description, short_description = (
-        parse_raw_description(soup)
-    )
+    (
+        brand,
+        model,
+        price,
+        year,
+        number_size_min,
+        number_size_max,
+        letter_size_min,
+        letter_size_max,
+        region,
+        city,
+        description,
+        short_description,
+    ) = parse_raw_description(soup)
     images = parse_raw_images(soup)
 
     return BikeListingData(
@@ -58,7 +69,10 @@ def scrape_listing(url: str) -> BikeListingData:
         year=year,
         url=url,
         date_posted=date_posted,
-        size=size,
+        number_size_min=number_size_min,
+        number_size_max=number_size_max,
+        letter_size_min=letter_size_min,
+        letter_size_max=letter_size_max,
         images=images,
         price=price,
         city=city,
