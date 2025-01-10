@@ -3,7 +3,7 @@ import { Listing } from "../types";
 
 import * as React from "react";
 
-import { ChevronLeft, ChevronRight, MapPin } from "lucide-react";
+import { ChevronLeft, ChevronRight, ExternalLink, MapPin } from "lucide-react";
 import { Badge } from "./ui/badge";
 import { Button } from "./ui/button";
 import {
@@ -135,7 +135,7 @@ function ListingCard({ listing }: ListingCardProps) {
                         target="_blank"
                         rel="noopener noreferrer"
                     >
-                        View on fillaritori.com{" "}
+                        View on fillaritori.com <ExternalLink />
                     </a>
                 </Button>
             </CardFooter>
