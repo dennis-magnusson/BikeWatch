@@ -25,6 +25,9 @@ def test_parse_sizes():
     assert parse_size("56 cm") == 56
     assert parse_size("56cm / M") == 56
     assert parse_size("S/47") == 47
+    assert parse_size("M/L") == "M/L"
+    assert parse_size("S (51-53)") == "S (51-53)"
+    assert parse_size("46,5") == 46.5
     try:
         parse_size("unknown")
     except ValueError as e:
