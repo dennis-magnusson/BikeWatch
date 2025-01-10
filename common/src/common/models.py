@@ -26,16 +26,6 @@ class BikeListingBase(BaseModel):
         orm_mode = True
 
 
-class BikeListingRead(BikeListingBase):
-    id: str
-    date_first_seen: datetime
-    date_last_updated: datetime
-
-
-class Base(DeclarativeBase):
-    pass
-
-
 class BikeListingData:
     def __init__(
         self,
@@ -98,6 +88,9 @@ class BikeListingData:
             "short_description": self.short_description,
         }
 
+
+class Base(DeclarativeBase):
+    pass
 
 class BikeListing(Base):
     __tablename__ = "bikes"
