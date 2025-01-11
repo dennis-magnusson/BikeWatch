@@ -43,26 +43,24 @@ function ListingCard({ listing }: ListingCardProps) {
         ? listing.images[selectedImage].image_url
         : "https://placehold.co/1440x1080";
 
+    const numericalSizeString =
+        listing.number_size_min === listing.number_size_max
+            ? `${listing.number_size_min}cm`
+            : `${listing.number_size_min}-${listing.number_size_max}cm`;
     const letterSizeString =
         listing.letter_size_min === listing.letter_size_max
             ? listing.letter_size_min
-            : listing.letter_size_min && listing.letter_size_max
-            ? `${listing.letter_size_min}-${listing.letter_size_max}`
-            : listing.letter_size_min || listing.letter_size_max || null;
+            : `${listing.letter_size_min}/${listing.letter_size_max}`;
 
-    const numberSizeString =
-        listing.number_size_min === listing.number_size_max
-            ? `${listing.number_size_min}cm`
-            : listing.number_size_min && listing.number_size_max
-            ? `${listing.number_size_min}-${listing.number_size_max}cm`
-            : listing.number_size_min || listing.number_size_max
-            ? `${listing.number_size_min || listing.number_size_max}cm`
-            : null;
-
-    const sizeString =
-        letterSizeString && numberSizeString
-            ? `${letterSizeString} / ${numberSizeString}`
-            : letterSizeString || numberSizeString || "?";
+    let sizeString = "?";
+    if (listing.number_size_min && listing.number_size_max) {
+        sizeString = numericalSizeString;
+        if (listing.letter_size_min || listing.letter_size_max) {
+            sizeString += ` (${letterSizeString})`;
+        }
+    } else if (listing.letter_size_min || listing.letter_size_max) {
+        sizeString = letterSizeString ? letterSizeString : "?";
+    }
 
     return (
         <Card className="w-[300px] mx-auto overflow-hidden flex flex-col">
