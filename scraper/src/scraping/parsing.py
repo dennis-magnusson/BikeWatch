@@ -1,8 +1,7 @@
-import logging
 import re
-from enum import Enum
+from typing import Optional, Tuple
 
-from scraping.parse_size import parse_size
+from common.models import Size
 
 keywords = {
     "size": ["koko", "rungon koko", "size", "frame size"],
@@ -24,10 +23,6 @@ def keyword_match(keywords, string):
 def parse_raw_description(soup):
     ps = [p.text for p in soup.find("article").find_all("p")]
 
-    letter_size_min = None
-    letter_size_max = None
-    number_size_min = None
-    number_size_max = None
     model = None
     brand = None
     city = None
@@ -56,9 +51,7 @@ def parse_raw_description(soup):
             raise IndexError(f"IndexError: {splitted}, p: {p}")
 
         if keyword_match(keywords["size"], key):
-            letter_size_min, letter_size_max, number_size_min, number_size_max = (
-                parse_size(val)
-            )
+            letter_size, numerical_size = parse_size(val)
 
         elif keyword_match(keywords["model"], key):
             model = val
@@ -82,10 +75,10 @@ def parse_raw_description(soup):
         model,
         price,
         year,
-        number_size_min,
-        number_size_max,
-        letter_size_min,
-        letter_size_max,
+        numerical_size[0],
+        numerical_size[1],
+        letter_size[0],
+        letter_size[1],
         region,
         city,
         description,
@@ -136,3 +129,66 @@ def parse_raw_images(soup):
     image_links = [link["href"] for link in image_links]
     image_links = [f"https:{link}" for link in image_links if link.startswith("//")]
     return image_links
+
+
+def parse_size(
+    size_str: str,
+) -> Tuple[
+    Tuple[Optional[Size], Optional[Size]], Tuple[Optional[float], Optional[float]]
+]:
+    """
+    Parses a size string and returns the corresponding size values.
+    - Returns the ranges for number sizes if present (None otherwise).
+    - Returns the ranges (min and max) for letter sizes if present (None otherwise).
+    - If the size is not a range the same value is returned for both min and max.
+    """
+    # replace all , with .
+    size_str = size_str.replace(",", ".")
+    size_str = size_str.replace("cm", "")
+    size_str = size_str.replace(" ", "")
+
+    possible_letter_size_substrings = {e.value: e for e in Size}
+
+    numerical_range_match = re.search(r"(\d+\.?\d*)[\s/-]+(\d+\.?\d*)", size_str)
+    if not numerical_range_match:
+        single_numerical_match = re.search(r"(\d+\.?\d*)", size_str)
+
+    letter_range_match = re.search(
+        r"(XS|S|M|L|XL)[\s/-]+(XS|S|M|L|XL)", size_str, re.IGNORECASE
+    )
+    single_letter_match = re.search(r"(XS|S|M|L|XL)", size_str, re.IGNORECASE)
+
+    numerical_result = (None, None)
+    letter_result = (None, None)
+
+    if numerical_range_match:
+        numerical_result = (
+            float(numerical_range_match.group(1)),
+            float(numerical_range_match.group(2)),
+        )
+    elif single_numerical_match:
+        numerical_result = (
+            float(single_numerical_match.group(1)),
+            float(single_numerical_match.group(1)),
+        )
+
+    if letter_range_match:
+        letter_result = (
+            possible_letter_size_substrings[letter_range_match.group(1).upper()],
+            possible_letter_size_substrings[letter_range_match.group(2).upper()],
+        )
+    elif single_letter_match:
+        letter_result = (
+            possible_letter_size_substrings[single_letter_match.group(1).upper()],
+            possible_letter_size_substrings[single_letter_match.group(1).upper()],
+        )
+
+    return (letter_result, numerical_result)
+
+    print(size_str)
+    # print(numerical_range_match.group(1), numerical_range_match.group(2))
+    print(single_numerical_match)
+    print(letter_range_match.group(1), letter_range_match.group(2))
+    print(single_letter_match)
+
+    raise ValueError(f"Could not parse size: {size_str}")

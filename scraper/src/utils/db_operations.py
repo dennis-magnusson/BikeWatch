@@ -23,8 +23,12 @@ def add_listing(session, listing_data: BikeListingData):
         year=listing_data.year,
         url=listing_data.url,
         date_posted=listing_data.date_posted,
-        letter_size_min=listing_data.letter_size_min,
-        letter_size_max=listing_data.letter_size_max,
+        letter_size_min=listing_data.letter_size_min.value
+        if listing_data.letter_size_min
+        else None,
+        letter_size_max=listing_data.letter_size_max.value
+        if listing_data.letter_size_max
+        else None,
         number_size_min=listing_data.number_size_min,
         number_size_max=listing_data.number_size_max,
         price=listing_data.price,
