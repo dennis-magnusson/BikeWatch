@@ -48,15 +48,15 @@ function ListingsPage() {
         const params = new URLSearchParams();
 
         if (sortBy) {
-            params.append("sortBy", sortBy);
+            params.append("sort_by", sortBy);
         }
 
         if (maxPrice) {
-            params.append("maxPrice", maxPrice.toString());
+            params.append("max_price", maxPrice.toString());
         }
 
         if (minPrice) {
-            params.append("minPrice", minPrice.toString());
+            params.append("min_price", minPrice.toString());
         }
 
         if (locationFilters.length > 0) {

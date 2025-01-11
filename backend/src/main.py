@@ -36,45 +36,52 @@ def get_db():
 @app.get("/listings/")
 def get_listings(
     db=Depends(get_db),
-    minPrice: int = Query(None),
-    maxPrice: int = Query(None),
+    min_price: int = Query(None),
+    max_price: int = Query(None),
     city: List[str] = Query(None),
     region: List[str] = Query(None),
-    sortBy: str = Query("newest")
+    sort_by: str = Query("newest"),
 ):
-    if minPrice is not None and maxPrice is not None and maxPrice < minPrice:
-        raise HTTPException(status_code=400, detail="maxPrice cannot be smaller than minPrice")
-    
-    print(f"{minPrice=}, {maxPrice=}")
+    if min_price is not None and max_price is not None and max_price < min_price:
+        raise HTTPException(
+            status_code=400, detail="max_price cannot be smaller than min_price"
+        )
+
+    print(f"{min_price=}, {max_price=}")
     query = db.query(BikeListing).options(joinedload(BikeListing.images))
 
     # Apply filters dynamically
-    if minPrice is not None:
-        query = query.filter(BikeListing.price >= minPrice)
-    if maxPrice is not None:
-        query = query.filter(BikeListing.price <= maxPrice)
+    if min_price is not None:
+        query = query.filter(BikeListing.price >= min_price)
+    if max_price is not None:
+        query = query.filter(BikeListing.price <= max_price)
     if city or region:
         location_filters = []
         if city:
-            location_filters.extend([func.lower(BikeListing.city) == c.lower() for c in city])
+            location_filters.extend(
+                [func.lower(BikeListing.city) == c.lower() for c in city]
+            )
         if region:
-            location_filters.extend([func.lower(BikeListing.region) == r.lower() for r in region])
+            location_filters.extend(
+                [func.lower(BikeListing.region) == r.lower() for r in region]
+            )
         query = query.filter(or_(*location_filters))
 
     # Apply sorting
-    if sortBy == "price_inc":
+    if sort_by == "price_inc":
         query = query.order_by(BikeListing.price.asc())
-    elif sortBy == "price_dec":
+    elif sort_by == "price_dec":
         query = query.order_by(BikeListing.price.desc())
-    elif sortBy == "newest":
+    elif sort_by == "newest":
         query = query.order_by(BikeListing.date_posted.desc())
-    elif sortBy == "oldest":
+    elif sort_by == "oldest":
         query = query.order_by(BikeListing.date_posted.asc())
 
     # Execute query
     results = query.all()
 
     return results
+
 
 @app.get("/locations/")
 def get_locations(db=Depends(get_db)):
@@ -87,9 +94,12 @@ def get_locations(db=Depends(get_db)):
     for region in regions:
         locations.append({"locationType": "region", "name": region[0]})
 
-    locations = sorted(locations, key=lambda x: x["name"] != "Uusimaa") # Sort Uusimaa first always
+    locations = sorted(
+        locations, key=lambda x: x["name"] != "Uusimaa"
+    )  # Sort Uusimaa first always
 
     return locations
+
 
 if __name__ == "__main__":
     import uvicorn
