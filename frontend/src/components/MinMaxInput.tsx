@@ -23,8 +23,6 @@ function MinMaxInput({
         maxPrice.toString()
     );
 
-    console.log(minPriceInput, maxPriceInput);
-
     const handleMinPriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setMinPriceInput(e.target.value);
         console.log(Number(e.target.value));
