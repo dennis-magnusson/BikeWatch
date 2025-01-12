@@ -1,8 +1,8 @@
 import { Location } from "../types";
 import FormInput from "./FormInput";
-import KeywordAdder from "./KeywordAdder";
 import MinMaxInput from "./MinMaxInput";
 import SearchableMultiselect from "./SearchableMultiselect";
+import { SizeSelector } from "./SizeSelector";
 import SortBySelect from "./SortBySelect";
 import { Button } from "./ui/button";
 import { Card, CardContent, CardHeader } from "./ui/card";
@@ -18,9 +18,13 @@ type FilterFormProps = {
     locations: Location[];
     locationFilters: Location[];
     setLocationFilters: React.Dispatch<React.SetStateAction<Location[]>>;
-    keywords: string[];
-    setKeywords: React.Dispatch<React.SetStateAction<string[]>>;
+    size: number;
+    setSize: React.Dispatch<React.SetStateAction<number>>;
+    showAllSizes: boolean;
+    setShowAllSizes: React.Dispatch<React.SetStateAction<boolean>>;
     updateFilters: () => void;
+    sizeFlexibility: boolean;
+    setSizeFlexibility: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 function FilterForm({
@@ -33,9 +37,13 @@ function FilterForm({
     locations,
     locationFilters,
     setLocationFilters,
-    keywords,
-    setKeywords,
+    size,
+    setSize,
+    showAllSizes,
+    setShowAllSizes,
     updateFilters,
+    sizeFlexibility,
+    setSizeFlexibility,
 }: FilterFormProps) {
     return (
         <>
@@ -73,7 +81,7 @@ function FilterForm({
                             />
                         </FormInput>
 
-                        <FormInput>
+                        {/* <FormInput>
                             <Label htmlFor="Custom keywords">
                                 Custom keywords
                             </Label>
@@ -81,13 +89,27 @@ function FilterForm({
                                 keywords={keywords}
                                 setKeywords={setKeywords}
                             />
-                        </FormInput>
+                        </FormInput> */}
 
                         <FormInput>
-                            <Button onClick={updateFilters}>
-                                Update filters
-                            </Button>
+                            <Label htmlFor="size">Size</Label>
+                            <SizeSelector
+                                size={size}
+                                setSize={setSize}
+                                showAllSizes={showAllSizes}
+                                setShowAllSizes={setShowAllSizes}
+                                sizeFlexibility={sizeFlexibility}
+                                setSizeFlexibility={setSizeFlexibility}
+                            />
                         </FormInput>
+
+                        <div className="pt-4">
+                            <FormInput>
+                                <Button onClick={updateFilters}>
+                                    Update filters
+                                </Button>
+                            </FormInput>
+                        </div>
                     </div>
                 </CardContent>
             </Card>

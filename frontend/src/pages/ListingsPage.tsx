@@ -12,7 +12,10 @@ function ListingsPage() {
     const [maxPrice, setMaxPrice] = useState<number>(0);
     const [minPrice, setMinPrice] = useState<number>(0);
     const [locationFilters, setLocationFilters] = useState<Location[]>([]);
-    const [keywords, setKeywords] = useState<string[]>([]);
+
+    const [size, setSize] = useState<number>(55.0);
+    const [showAllSizes, setShowAllSizes] = useState<boolean>(true);
+    const [sizeFlexibility, setSizeFlexibility] = useState<boolean>(true);
 
     useEffect(() => {
         fetchListings();
@@ -70,6 +73,13 @@ function ListingsPage() {
             });
         }
 
+        if (!showAllSizes) {
+            params.append("size", size.toString());
+            if (sizeFlexibility) {
+                params.append("size_flexibility", "true");
+            }
+        }
+
         // if (keywords.length > 0) {
         //     keywords.forEach((keyword) => {
         //         params.append("keywords", keyword);
@@ -99,8 +109,12 @@ function ListingsPage() {
                         locations={locations}
                         locationFilters={locationFilters}
                         setLocationFilters={setLocationFilters}
-                        keywords={keywords}
-                        setKeywords={setKeywords}
+                        size={size}
+                        setSize={setSize}
+                        showAllSizes={showAllSizes}
+                        setShowAllSizes={setShowAllSizes}
+                        sizeFlexibility={sizeFlexibility}
+                        setSizeFlexibility={setSizeFlexibility}
                         updateFilters={fetchListings}
                     />
                 </div>
