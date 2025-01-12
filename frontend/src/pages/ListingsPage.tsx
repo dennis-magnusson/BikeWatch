@@ -105,7 +105,7 @@ function ListingsPage() {
                     />
                 </div>
 
-                <div className="grid grid-cols-[repeat(3,1fr)] gap-4">
+                <div className="grid grid-cols-[repeat(3,1fr)] gap-4 w-[932px]">
                     {howManyFoundText}
                     {listings.map((listing) => (
                         <ListingCard key={listing.id} listing={listing} />
