@@ -3,7 +3,6 @@ import FormInput from "./FormInput";
 import MinMaxInput from "./MinMaxInput";
 import SearchableMultiselect from "./SearchableMultiselect";
 import { SizeSelector } from "./SizeSelector";
-import SortBySelect from "./SortBySelect";
 import { Button } from "./ui/button";
 import { Card, CardContent, CardHeader } from "./ui/card";
 import { Label } from "./ui/label";
@@ -53,14 +52,6 @@ function FilterForm({
                 </CardHeader>
                 <CardContent>
                     <div className="flex flex-col w-full">
-                        <FormInput>
-                            <Label htmlFor="sort">Sort by</Label>
-                            <SortBySelect
-                                sortBy={sortBy}
-                                setSortBy={setSortBy}
-                            />
-                        </FormInput>
-
                         <FormInput>
                             <Label htmlFor="city">Location</Label>
                             <SearchableMultiselect
