@@ -43,7 +43,7 @@ function MinMaxInput({
                     onChange={handleMinPriceChange}
                     type="number"
                     placeholder="Min"
-                    className="pl-2 pr-8 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                    className="pl-2 pr-8 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none max-w-32"
                 />
                 {unit && (
                     <span className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500">
@@ -58,7 +58,7 @@ function MinMaxInput({
                     onChange={handleMaxPriceChange}
                     type="number"
                     placeholder="Max"
-                    className="pl-2 pr-8 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                    className="pl-2 pr-8 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none max-w-32"
                 />
                 {unit && (
                     <span className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500">

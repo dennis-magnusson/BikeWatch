@@ -57,7 +57,7 @@ function FilterForm({
                     <h2 className="font-bold text-3xl">Search for bicycles</h2>
                 </CardHeader>
                 <CardContent>
-                    <div className="grid grid-cols-3 gap-6 w-full">
+                    <div className="flex flex-row space-x-16">
                         <div>
                             <FormInput>
                                 <Label
