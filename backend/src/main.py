@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import create_engine, func, or_
 from sqlalchemy.orm import Session, joinedload, sessionmaker
 
-from common.models import BikeListing
+from common.models import BikeListing, Size
 
 app = FastAPI()
 
@@ -41,6 +41,7 @@ def get_listings(
     city: List[str] = Query(None),
     region: List[str] = Query(None),
     sort_by: str = Query("newest"),
+    size_numerical: float = Query(None),
 ):
     if min_price is not None and max_price is not None and max_price < min_price:
         raise HTTPException(
@@ -66,6 +67,11 @@ def get_listings(
                 [func.lower(BikeListing.region) == r.lower() for r in region]
             )
         query = query.filter(or_(*location_filters))
+    if size_numerical is not None:
+        query = query.filter(
+            (BikeListing.number_size_min <= size_numerical)
+            & (BikeListing.number_size_max >= size_numerical)
+        )
 
     # Apply sorting
     if sort_by == "price_inc":
