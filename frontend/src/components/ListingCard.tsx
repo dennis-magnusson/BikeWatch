@@ -63,7 +63,7 @@ function ListingCard({ listing }: ListingCardProps) {
     }
 
     return (
-        <Card className="w-[300px] mx-auto overflow-hidden flex flex-col">
+        <Card className="max-w-[290px] mx-auto overflow-hidden flex flex-col">
             <div className="space-y-2">
                 <div className="relative w-full h-44">
                     <img

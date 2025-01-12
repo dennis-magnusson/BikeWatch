@@ -22,7 +22,7 @@ export function SizeSelector({
     return (
         <div className="space-y-2">
             <div className="flex items-center space-x-2">
-                <div className="relative flex-1">
+                <div className="relative w-32">
                     <Input
                         type="string"
                         value={size}

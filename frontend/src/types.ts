@@ -31,4 +31,6 @@ interface Listing {
     images: Image[];
 }
 
-export type { Image, Listing, Location };
+type SortBy = "newest" | "oldest" | "price_dec" | "price_inc";
+
+export type { Image, Listing, Location, SortBy };

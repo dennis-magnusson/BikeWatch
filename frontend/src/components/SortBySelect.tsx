@@ -1,3 +1,4 @@
+import { SortBy } from "../types";
 import {
     Select,
     SelectContent,
@@ -8,8 +9,8 @@ import {
 } from "./ui/select";
 
 type SortBySelectProps = {
-    sortBy: string;
-    setSortBy: React.Dispatch<React.SetStateAction<string>>;
+    sortBy: SortBy;
+    setSortBy: React.Dispatch<React.SetStateAction<SortBy>>;
 };
 
 function SortBySelect({ sortBy, setSortBy }: SortBySelectProps) {
