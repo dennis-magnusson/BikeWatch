@@ -2,6 +2,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import FilterForm from "../components/FilterForm";
 import ListingCard from "../components/ListingCard";
+import { SearchResultControls } from "../components/SearchResultControls";
 import { Listing, Location } from "../types";
 
 function ListingsPage() {
@@ -97,7 +98,7 @@ function ListingsPage() {
 
     return (
         <>
-            <div className="flex flex-row gap-4 p-4 items-start justify-center">
+            <div className="flex flex-column gap-4 p-4 items-start justify-center">
                 <div className="max-w-[330px] w-full">
                     <FilterForm
                         sortBy={sortBy}
@@ -119,11 +120,17 @@ function ListingsPage() {
                     />
                 </div>
 
-                <div className="grid grid-cols-[repeat(3,1fr)] gap-4 w-[932px]">
-                    {howManyFoundText}
-                    {listings.map((listing) => (
-                        <ListingCard key={listing.id} listing={listing} />
-                    ))}
+                <div>
+                    <SearchResultControls
+                        setSortBy={setSortBy}
+                        sortBy={sortBy}
+                        numberOfResults={listings.length}
+                    />
+                    <div className="grid grid-cols-[repeat(3,1fr)] gap-4 w-[932px]">
+                        {listings.map((listing) => (
+                            <ListingCard key={listing.id} listing={listing} />
+                        ))}
+                    </div>
                 </div>
             </div>
         </>
