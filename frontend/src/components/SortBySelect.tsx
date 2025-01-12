@@ -16,18 +16,18 @@ function SortBySelect({ sortBy, setSortBy }: SortBySelectProps) {
     return (
         <>
             <Select value={sortBy} onValueChange={setSortBy}>
-                <SelectTrigger className="w-full">
+                <SelectTrigger className="w-48">
                     <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
                     <SelectGroup>
-                        <SelectItem value="newest">Newest</SelectItem>
-                        <SelectItem value="oldest">Oldest</SelectItem>
+                        <SelectItem value="newest">Newest first</SelectItem>
+                        <SelectItem value="oldest">Oldest first</SelectItem>
                         <SelectItem value="price_inc">
-                            Price: Low to High
+                            Price ascending
                         </SelectItem>
                         <SelectItem value="price_dec">
-                            Price: High to Low
+                            Price descending
                         </SelectItem>
                     </SelectGroup>
                 </SelectContent>
