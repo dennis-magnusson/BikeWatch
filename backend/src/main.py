@@ -41,7 +41,8 @@ def get_listings(
     city: List[str] = Query(None),
     region: List[str] = Query(None),
     sort_by: str = Query("newest"),
-    size_numerical: float = Query(None),
+    size: float = Query(None),
+    size_flexibility: bool = Query(False),
 ):
     if min_price is not None and max_price is not None and max_price < min_price:
         raise HTTPException(
@@ -67,11 +68,17 @@ def get_listings(
                 [func.lower(BikeListing.region) == r.lower() for r in region]
             )
         query = query.filter(or_(*location_filters))
-    if size_numerical is not None:
-        query = query.filter(
-            (BikeListing.number_size_min <= size_numerical)
-            & (BikeListing.number_size_max >= size_numerical)
-        )
+    if size is not None:
+        if size_flexibility:
+            query = query.filter(
+                (BikeListing.number_size_min <= size + 1)
+                & (BikeListing.number_size_max >= size - 1)
+            )
+        else:
+            query = query.filter(
+                (BikeListing.number_size_min <= size)
+                & (BikeListing.number_size_max >= size)
+            )
 
     # Apply sorting
     if sort_by == "price_inc":
