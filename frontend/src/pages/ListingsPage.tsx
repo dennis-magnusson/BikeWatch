@@ -2,6 +2,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import FilterForm from "../components/FilterForm";
 import ListingCard from "../components/ListingCard";
+import { PaginationBar } from "../components/PaginationBar";
 import { SearchResultControls } from "../components/SearchResultControls";
 import { Listing, Location, SortBy } from "../types";
 
@@ -20,6 +21,13 @@ function ListingsPage() {
     const [keywords, setKeywords] = useState<string[]>([]);
     const [bikeTypes, setBikeTypes] = useState<string[]>(["road"]);
 
+    const [page, setPage] = useState<number>(1);
+    const [totalResults, setTotalResults] = useState<number>(0);
+
+    const resultsPerPage = 30;
+
+    const totalPages = Math.ceil(totalResults / resultsPerPage);
+
     useEffect(() => {
         fetchListings();
         fetchLocations();
@@ -27,14 +35,15 @@ function ListingsPage() {
 
     useEffect(() => {
         fetchListings();
-    }, [sortBy]);
+    }, [sortBy, page]);
 
     const fetchListings = async () => {
         try {
             const url = `http://127.0.0.1:8000/listings?${formatUrlParams()}`;
             console.log(url);
             const response = await axios.get(url);
-            setListings(response.data);
+            setTotalResults(response.data.total);
+            setListings(response.data.listings);
         } catch (error) {
             console.error("Error fetching listings: ", error);
         }
@@ -89,7 +98,15 @@ function ListingsPage() {
         //     });
         // }
 
+        params.append("pagination", ((page - 1) * resultsPerPage).toString());
+
         return params.toString();
+    };
+
+    const handlePageChange = (newPage: number) => {
+        if (newPage >= 1 && newPage <= totalPages) {
+            setPage(newPage);
+        }
     };
 
     return (
@@ -119,13 +136,21 @@ function ListingsPage() {
                 <SearchResultControls
                     setSortBy={setSortBy}
                     sortBy={sortBy}
-                    numberOfResults={listings.length}
+                    numberOfResults={totalResults}
+                    numberOfPages={totalPages}
+                    page={page}
                 />
                 <div className="grid grid-cols-[repeat(3,1fr)] gap-4 w-full">
                     {listings.map((listing) => (
                         <ListingCard key={listing.id} listing={listing} />
                     ))}
                 </div>
+
+                <PaginationBar
+                    page={page}
+                    totalPages={totalPages}
+                    handlePageChange={handlePageChange}
+                />
             </div>
         </>
     );

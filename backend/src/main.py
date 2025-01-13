@@ -43,7 +43,10 @@ def get_listings(
     sort_by: str = Query("newest"),
     size: float = Query(None),
     size_flexibility: bool = Query(False),
+    pagination: int = Query(0),
 ):
+    OFFSET = 30
+
     if min_price is not None and max_price is not None and max_price < min_price:
         raise HTTPException(
             status_code=400, detail="max_price cannot be smaller than min_price"
@@ -90,10 +93,12 @@ def get_listings(
     elif sort_by == "oldest":
         query = query.order_by(BikeListing.date_posted.asc())
 
-    # Execute query
+    # Apply pagination and get results
+    total = query.count()
+    query = query.limit(30).offset(OFFSET * pagination)
     results = query.all()
 
-    return results
+    return {"total": total, "listings": results}
 
 
 @app.get("/locations/")
