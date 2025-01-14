@@ -12,7 +12,7 @@ function ListingsPage() {
 
     const [sortBy, setSortBy] = useState<SortBy>("newest");
 
-    const [maxPrice, setMaxPrice] = useState<number>(0);
+    const [maxPrice, setMaxPrice] = useState<number>(100000);
     const [minPrice, setMinPrice] = useState<number>(0);
     const [locationFilters, setLocationFilters] = useState<Location[]>([]);
     const [size, setSize] = useState<number>(55.0);
