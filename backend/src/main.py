@@ -43,7 +43,7 @@ def get_listings(
     sort_by: str = Query("newest"),
     size: float = Query(None),
     size_flexibility: bool = Query(False),
-    pagination: int = Query(0),
+    pagination: int = Query(1),
 ):
     OFFSET = 30
 
@@ -95,7 +95,7 @@ def get_listings(
 
     # Apply pagination and get results
     total = query.count()
-    query = query.limit(30).offset(OFFSET * pagination)
+    query = query.limit(30).offset(OFFSET * (pagination - 1))
     results = query.all()
 
     return {"total": total, "listings": results}

@@ -27,6 +27,9 @@ function ListingsPage() {
     const resultsPerPage = 30;
 
     const totalPages = Math.ceil(totalResults / resultsPerPage);
+    console.log(
+        `page=${page}, totalResults=${totalResults}, totalPages=${totalPages}, resultsPerPage=${resultsPerPage}`
+    );
 
     useEffect(() => {
         fetchListings();
@@ -98,7 +101,7 @@ function ListingsPage() {
         //     });
         // }
 
-        params.append("pagination", ((page - 1) * resultsPerPage).toString());
+        params.append("pagination", page.toString());
 
         return params.toString();
     };
