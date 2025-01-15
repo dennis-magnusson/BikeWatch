@@ -184,11 +184,3 @@ def parse_size(
         )
 
     return (letter_result, numerical_result)
-
-    print(size_str)
-    # print(numerical_range_match.group(1), numerical_range_match.group(2))
-    print(single_numerical_match)
-    print(letter_range_match.group(1), letter_range_match.group(2))
-    print(single_letter_match)
-
-    raise ValueError(f"Could not parse size: {size_str}")
