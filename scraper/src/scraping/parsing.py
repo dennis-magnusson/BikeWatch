@@ -1,5 +1,5 @@
 import re
-from typing import Optional, Tuple
+from typing import List, Optional, Tuple
 
 from common.models import Size
 
@@ -86,10 +86,17 @@ def parse_raw_description(soup):
     )
 
 
-def parse_raw_title(soup):
+def parse_raw_title(soup, remove_category_words: List[str]) -> str:
     post_title = soup.find("h1").find_all("span")[-1].text.rsplit(",", maxsplit=2)
-    title = post_title[0]
+    title = remove_words(post_title[0], remove_category_words)
     return title
+
+
+def remove_words(string: str, remove_words: List[str]) -> str:
+    words_to_remove = remove_words + [word.capitalize() for word in remove_words]
+    for word in words_to_remove:
+        string = string.replace(f" {word}", "")
+    return string
 
 
 def parse_price(price_str):

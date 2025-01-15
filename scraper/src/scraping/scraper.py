@@ -9,6 +9,15 @@ from scraping.parsing import (
 )
 from scraping.request_throttler import get_request
 
+WORDS_TO_REMOVE_ROADBIKE_CATEGORY = [
+    "maantiepyörä",
+    "road bike",
+    "maantie/kisapyörä",
+    "Maantie/kisapyörä",
+    "aero-maantiepyörä",
+    "kisapyörä",
+]
+
 
 def find_listings_for_category(base_url, pages=1):
     urls = [base_url.format(page) for page in range(1, pages + 1)]
@@ -43,7 +52,9 @@ def scrape_listing(url: str) -> BikeListingData:
     soup = BeautifulSoup(response.text, "html.parser")
 
     id = get_listing_id(url)
-    title = parse_raw_title(soup)
+    title = parse_raw_title(
+        soup, remove_category_words=WORDS_TO_REMOVE_ROADBIKE_CATEGORY
+    )
     date_posted = parse_date_posted(soup)
     (
         brand,
