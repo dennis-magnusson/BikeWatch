@@ -5,7 +5,37 @@ for module in sorted(sys.modules.keys()):
     print(module)
 
 from common.models import Size
-from scraper.src.scraping.parsing import parse_price, parse_size
+from scraper.src.scraping.parsing import parse_price, parse_size, remove_words
+
+WORDS_TO_REMOVE_ROADBIKE_CATEGORY = [
+    "maantiepyörä",
+    "road bike",
+    "maantie/kisapyörä",
+    "Maantie/kisapyörä",
+    "aero-maantiepyörä",
+    "kisapyörä",
+]
+
+
+def test_remove_words():
+    assert (
+        remove_words(
+            "Canyon Endurace AL 7.0 Maantiepyörä", WORDS_TO_REMOVE_ROADBIKE_CATEGORY
+        )
+        == "Canyon Endurace AL 7.0"
+    )
+    assert (
+        remove_words(
+            "Trek Madone SL 6 Gen 8 Road bike", WORDS_TO_REMOVE_ROADBIKE_CATEGORY
+        )
+        == "Trek Madone SL 6 Gen 8"
+    )
+    assert (
+        remove_words(
+            "BMC Teammachine SLR01 Maantie/kisapyörä", WORDS_TO_REMOVE_ROADBIKE_CATEGORY
+        )
+        == "BMC Teammachine SLR01"
+    )
 
 
 def test_parse_price():
