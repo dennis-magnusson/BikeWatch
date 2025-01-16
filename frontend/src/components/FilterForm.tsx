@@ -26,8 +26,9 @@ type FilterFormProps = {
     setSizeFlexibility: React.Dispatch<React.SetStateAction<boolean>>;
     keywords: string[];
     setKeywords: React.Dispatch<React.SetStateAction<string[]>>;
-    bikeTypes: string[];
-    setBikeTypes: React.Dispatch<React.SetStateAction<string[]>>;
+    categories: string[];
+    selectedCategories: string[];
+    setSelectedCategories: React.Dispatch<React.SetStateAction<string[]>>;
 };
 
 function FilterForm({
@@ -47,9 +48,15 @@ function FilterForm({
     setSizeFlexibility,
     keywords,
     setKeywords,
-    bikeTypes,
-    setBikeTypes,
+    categories,
+    selectedCategories,
+    setSelectedCategories,
 }: FilterFormProps) {
+    const categoryOptions = categories.sort().map((c) => ({
+        id: c,
+        value: c,
+        label: (c.charAt(0).toUpperCase() + c.slice(1)).replace("_", " "),
+    }));
     return (
         <div className="w-full">
             <Card>
@@ -92,55 +99,9 @@ function FilterForm({
                             <FormInput>
                                 <CheckboxGroup
                                     label="Type"
-                                    options={[
-                                        {
-                                            id: "road",
-                                            value: "road",
-                                            label: "Road",
-                                        },
-                                        {
-                                            id: "gravel",
-                                            value: "gravel",
-                                            label: "Gravel",
-                                        },
-                                        {
-                                            id: "triathlon",
-                                            value: "triathlon",
-                                            label: "Triathlon",
-                                        },
-                                        {
-                                            id: "hybrid",
-                                            value: "hybrid",
-                                            label: "Hybrid",
-                                        },
-                                        {
-                                            id: "mountain",
-                                            value: "mountain",
-                                            label: "Mountain",
-                                        },
-                                        {
-                                            id: "fatbike",
-                                            value: "fatbike",
-                                            label: "Fatbike",
-                                        },
-                                        {
-                                            id: "kids",
-                                            value: "kids",
-                                            label: "Kids",
-                                        },
-                                        {
-                                            id: "electric",
-                                            value: "electric",
-                                            label: "Electric",
-                                        },
-                                        {
-                                            id: "other",
-                                            value: "other",
-                                            label: "Other",
-                                        },
-                                    ]}
-                                    selectedOptions={bikeTypes}
-                                    setSelectedOptions={setBikeTypes}
+                                    options={categoryOptions}
+                                    selectedOptions={selectedCategories}
+                                    setSelectedOptions={setSelectedCategories}
                                 />
                             </FormInput>
                         </div>

@@ -9,17 +9,20 @@ import { Listing, Location, SortBy } from "../types";
 function ListingsPage() {
     const [listings, setListings] = useState<Listing[]>([]);
     const [locations, setLocations] = useState<Location[]>([]);
+    const [categories, setCategories] = useState<string[]>([]);
 
     const [sortBy, setSortBy] = useState<SortBy>("newest");
 
-    const [maxPrice, setMaxPrice] = useState<number>(100000);
+    const [maxPrice, setMaxPrice] = useState<number>(0);
     const [minPrice, setMinPrice] = useState<number>(0);
     const [locationFilters, setLocationFilters] = useState<Location[]>([]);
     const [size, setSize] = useState<number>(55.0);
     const [showAllSizes, setShowAllSizes] = useState<boolean>(true);
     const [sizeFlexibility, setSizeFlexibility] = useState<boolean>(true);
     const [keywords, setKeywords] = useState<string[]>([]);
-    const [bikeTypes, setBikeTypes] = useState<string[]>(["road"]);
+    const [selectedCategories, setSelectedCategories] = useState<string[]>([
+        "gravel",
+    ]);
 
     const [page, setPage] = useState<number>(1);
     const [totalResults, setTotalResults] = useState<number>(0);
@@ -31,9 +34,12 @@ function ListingsPage() {
         `page=${page}, totalResults=${totalResults}, totalPages=${totalPages}, resultsPerPage=${resultsPerPage}`
     );
 
+    const BASE_URL = "http://127.0.0.1:8000";
+
     useEffect(() => {
         fetchListings();
         fetchLocations();
+        fetchCategories();
     }, []);
 
     useEffect(() => {
@@ -42,7 +48,7 @@ function ListingsPage() {
 
     const fetchListings = async () => {
         try {
-            const url = `http://127.0.0.1:8000/listings?${formatUrlParams()}`;
+            const url = `${BASE_URL}/listings?${formatUrlParams()}`;
             console.log(url);
             const response = await axios.get(url);
             setTotalResults(response.data.total);
@@ -52,9 +58,19 @@ function ListingsPage() {
         }
     };
 
+    const fetchCategories = async () => {
+        try {
+            const url = `${BASE_URL}/categories`;
+            const response = await axios.get(url);
+            setCategories(response.data);
+        } catch (error) {
+            console.error("Error fetching categories: ", error);
+        }
+    };
+
     const fetchLocations = async () => {
         try {
-            const url = "http://127.0.0.1:8000/locations";
+            const url = `${BASE_URL}/locations`;
             const response = await axios.get(url);
             setLocations(response.data);
         } catch (error) {
@@ -101,6 +117,12 @@ function ListingsPage() {
         //     });
         // }
 
+        if (selectedCategories.length > 0) {
+            selectedCategories.forEach((category) => {
+                params.append("category", category);
+            });
+        }
+
         params.append("pagination", page.toString());
 
         return params.toString();
@@ -132,8 +154,9 @@ function ListingsPage() {
                     updateFilters={fetchListings}
                     keywords={keywords}
                     setKeywords={setKeywords}
-                    bikeTypes={bikeTypes}
-                    setBikeTypes={setBikeTypes}
+                    categories={categories}
+                    selectedCategories={selectedCategories}
+                    setSelectedCategories={setSelectedCategories}
                 />
 
                 <SearchResultControls
