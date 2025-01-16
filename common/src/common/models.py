@@ -77,18 +77,7 @@ class BikeListingData:
         self.description = description
         self.region = region
         self.short_description = short_description
-
-    def __repr__(self):
-        return (
-            f"BikeListing(title={self.title!r}, url={self.url!r}, date_posted={self.date_posted!r}, "
-            f"number_size=[{self.number_size_min!r}:{self.letter_size_max!r}], "
-            f"letter_size=[{self.letter_size_min!r}:{self.letter_size_max!r}], "
-            f"images={self.images!r}, city={self.city}, price={self.price!r}, "
-            f"description={self.description!r})"
-        )
-
-    def __str__(self):
-        return f"{self.title} - {self.price or 'Price not listed'} - {self.date_posted}"
+        self.category = category
 
     def to_dict(self):
         return {
