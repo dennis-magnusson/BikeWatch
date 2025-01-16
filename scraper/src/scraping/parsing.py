@@ -15,6 +15,25 @@ keywords = {
     "description": ["kuvaus"],
 }
 
+words_to_remove_from_titles = {
+    "road": [
+        "maantiepyörä",
+        "road bike",
+        "maantie/kisapyörä",
+        "Maantie/kisapyörä",
+        "aero-maantiepyörä",
+        "kisapyörä",
+    ],
+    "gravel": ["gravel"],
+    "triathlon": [],
+    "hybrid": [],
+    "mountain_rigid": [],
+    "mountain_hardtail": [],
+    "electric_flat": [],
+    "electric_mountain": [],
+    "fatbike": [],
+}
+
 
 def keyword_match(keywords, string):
     return any(kw in string.lower() for kw in keywords)
@@ -86,9 +105,9 @@ def parse_raw_description(soup):
     )
 
 
-def parse_raw_title(soup, remove_category_words: List[str]) -> str:
+def parse_raw_title(soup, category: str) -> str:
     post_title = soup.find("h1").find_all("span")[-1].text.rsplit(",", maxsplit=2)
-    title = remove_words(post_title[0], remove_category_words)
+    title = remove_words(post_title[0], words_to_remove_from_titles.get(category, []))
     return title
 
 

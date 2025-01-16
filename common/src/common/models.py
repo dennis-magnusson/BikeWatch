@@ -58,6 +58,7 @@ class BikeListingData:
         region: str | None,
         description: str | None,
         short_description: str | None,
+        category: str | None = None,
     ):
         self.id = id
         self.title = title
@@ -108,6 +109,7 @@ class BikeListingData:
             "region": self.region,
             "description": self.description,
             "short_description": self.short_description,
+            "category": self.category,
         }
 
 
