@@ -1,9 +1,3 @@
-import sys
-
-print("Modules found in the file:")
-for module in sorted(sys.modules.keys()):
-    print(module)
-
 from common.models import Size
 from scraper.src.scraping.parsing import parse_price, parse_size, remove_words
 
