@@ -40,6 +40,7 @@ def get_listings(
     max_price: int = Query(None),
     city: List[str] = Query(None),
     region: List[str] = Query(None),
+    category: List[str] = Query(None),
     sort_by: str = Query("newest"),
     size: float = Query(None),
     size_flexibility: bool = Query(False),
@@ -56,9 +57,9 @@ def get_listings(
     query = db.query(BikeListing).options(joinedload(BikeListing.images))
 
     # Apply filters dynamically
-    if min_price is not None:
+    if min_price:
         query = query.filter(BikeListing.price >= min_price)
-    if max_price is not None:
+    if max_price:
         query = query.filter(BikeListing.price <= max_price)
     if city or region:
         location_filters = []
@@ -71,7 +72,9 @@ def get_listings(
                 [func.lower(BikeListing.region) == r.lower() for r in region]
             )
         query = query.filter(or_(*location_filters))
-    if size is not None:
+    if category:
+        query = query.filter(BikeListing.category.in_(category))
+    if size:
         if size_flexibility:
             query = query.filter(
                 (BikeListing.number_size_min <= size + 1)
@@ -117,6 +120,12 @@ def get_locations(db=Depends(get_db)):
     )  # Sort Uusimaa first always
 
     return locations
+
+
+@app.get("/categories/")
+def get_categories(db=Depends(get_db)):
+    categories = db.query(BikeListing.category).distinct().all()
+    return [category[0] for category in categories]
 
 
 if __name__ == "__main__":
