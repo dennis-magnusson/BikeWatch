@@ -125,6 +125,7 @@ class BikeListing(Base):
     region: Mapped[str] = mapped_column(nullable=True)
     description: Mapped[str] = mapped_column(nullable=True)
     short_description: Mapped[str] = mapped_column(nullable=True)
+    category: Mapped[str] = mapped_column()
     date_first_seen: Mapped[datetime] = mapped_column(
         DateTime, insert_default=func.now()
     )

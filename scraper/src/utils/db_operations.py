@@ -36,6 +36,7 @@ def add_listing(session, listing_data: BikeListingData):
         region=listing_data.region,
         description=listing_data.description,
         short_description=listing_data.short_description,
+        category=listing_data.category,
     )
 
     for image_url in listing_data.images:
