@@ -40,14 +40,14 @@ function CheckboxGroup({
                                 id={option.id}
                                 value={option.value}
                                 checked={selectedOptions.includes(option.value)}
-                                onChange={() =>
+                                onCheckedChange={() =>
                                     handleCheckboxChange(option.value)
                                 }
                                 className="h-5 w-5"
                             />
                             <Label
                                 htmlFor={option.id}
-                                className="text-base font-normal"
+                                className="text-base font-normal whitespace-nowrap"
                             >
                                 {option.label}
                             </Label>
@@ -65,14 +65,14 @@ function CheckboxGroup({
                                 id={option.id}
                                 value={option.value}
                                 checked={selectedOptions.includes(option.value)}
-                                onChange={() =>
+                                onCheckedChange={() =>
                                     handleCheckboxChange(option.value)
                                 }
                                 className="h-5 w-5"
                             />
                             <Label
                                 htmlFor={option.id}
-                                className="text-base font-normal"
+                                className="text-base font-normal whitespace-nowrap"
                             >
                                 {option.label}
                             </Label>
