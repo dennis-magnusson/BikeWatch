@@ -20,19 +20,12 @@ function ListingsPage() {
     const [showAllSizes, setShowAllSizes] = useState<boolean>(true);
     const [sizeFlexibility, setSizeFlexibility] = useState<boolean>(true);
     const [keywords, setKeywords] = useState<string[]>([]);
-    const [selectedCategories, setSelectedCategories] = useState<string[]>([
-        "gravel",
-    ]);
+    const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
 
     const [page, setPage] = useState<number>(1);
     const [totalResults, setTotalResults] = useState<number>(0);
-
     const resultsPerPage = 30;
-
     const totalPages = Math.ceil(totalResults / resultsPerPage);
-    console.log(
-        `page=${page}, totalResults=${totalResults}, totalPages=${totalPages}, resultsPerPage=${resultsPerPage}`
-    );
 
     const BASE_URL = "http://127.0.0.1:8000";
 
