@@ -108,10 +108,13 @@ def get_listings(
 def get_locations(db=Depends(get_db)):
     # get all unique cities and regions but not null values
     cities = (
-        db.query(BikeListing.city).distinct().filter(BikeListing.city != None).all()
+        db.query(BikeListing.city).distinct().filter(BikeListing.city is not None).all()
     )
     regions = (
-        db.query(BikeListing.region).distinct().filter(BikeListing.region != None).all()
+        db.query(BikeListing.region)
+        .distinct()
+        .filter(BikeListing.region is not None)
+        .all()
     )
 
     locations = []
