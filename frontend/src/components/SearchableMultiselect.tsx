@@ -28,6 +28,8 @@ function SearchableMultiselect({
 }: SearchableMultiselectProps) {
     const [open, setOpen] = React.useState(false);
 
+    // TODO: Confirm that locations in location array are non-null
+
     const handleSelect = (currentLocation: Location) => {
         if (currentLocation) {
             setLocationFilters((prev) =>
