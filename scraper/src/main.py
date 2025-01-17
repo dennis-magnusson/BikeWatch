@@ -3,11 +3,11 @@ import os
 from time import sleep
 from typing import Iterable
 
-from scraping.scraper import find_listings_for_category, scrape_listing
-from scraping.urls import categories, get_url
+from db_operations import sync_listings
+from scraping import find_listings_for_category, scrape_listing
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session, sessionmaker
-from utils.db_operations import sync_listings
+from urls import Category, categories
 
 from common.models import Base, BikeListingData
 
@@ -23,14 +23,10 @@ class Scraper:
         self.scraping_frequency_minutes = scraping_frequency_minutes
         self.scraping_page_limit = scraping_page_limit
 
-    def scrape_category(self, category):
-        base_url = get_url(category)
-        category_name = category.name
-        logging.info(f"Scraping category ===== {category_name} =====")
+    def scrape_category(self, category: Category):
+        logging.info(f"Scraping category ===== {category.name} =====")
 
-        listing_urls: str = find_listings_for_category(
-            base_url, pages=self.scraping_page_limit
-        )
+        listing_urls: str = find_listings_for_category(category)
         logging.debug("Found {} listings".format(len(listing_urls)))
 
         listings: Iterable[BikeListingData] = [
@@ -67,7 +63,7 @@ def main():
     )
 
     scraping_frequency_minutes = int(os.environ.get("SCRAPING_FREQUENCY_MINUTES", 60))
-    scraping_page_limit = int(os.environ.get("PAGE_COUNT", 1))
+    scraping_page_limit = int(os.environ.get("PAGE_COUNT", 50))
 
     logging.info("Opening sqlalchemy session to sqlite...")
     engine = create_engine("sqlite:///data/bikes.db")

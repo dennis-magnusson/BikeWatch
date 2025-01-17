@@ -1,5 +1,5 @@
 from common.models import Size
-from scraper.src.scraping.parsing import parse_price, parse_size, remove_words
+from scraper.src.parsing import parse_price, parse_size, remove_words
 
 WORDS_TO_REMOVE_ROADBIKE_CATEGORY = [
     "maantiepyörä",
