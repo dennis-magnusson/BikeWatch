@@ -106,8 +106,13 @@ def get_listings(
 
 @app.get("/locations/")
 def get_locations(db=Depends(get_db)):
-    cities = db.query(BikeListing.city).distinct().all()
-    regions = db.query(BikeListing.region).distinct().all()
+    # get all unique cities and regions but not null values
+    cities = (
+        db.query(BikeListing.city).distinct().filter(BikeListing.city != None).all()
+    )
+    regions = (
+        db.query(BikeListing.region).distinct().filter(BikeListing.region != None).all()
+    )
 
     locations = []
     for city in cities:
@@ -125,6 +130,13 @@ def get_locations(db=Depends(get_db)):
 @app.get("/categories/")
 def get_categories(db=Depends(get_db)):
     categories = db.query(BikeListing.category).distinct().all()
+
+    # Sort road, gravel and hybrid always first
+    categories = sorted(
+        categories,
+        key=lambda x: x[0] not in ["road", "gravel", "hybrid"],
+    )
+
     return [category[0] for category in categories]
 
 
