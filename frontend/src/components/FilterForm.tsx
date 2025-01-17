@@ -52,7 +52,7 @@ function FilterForm({
     selectedCategories,
     setSelectedCategories,
 }: FilterFormProps) {
-    const categoryOptions = categories.sort().map((c) => ({
+    const categoryOptions = categories.map((c) => ({
         id: c,
         value: c,
         label: (c.charAt(0).toUpperCase() + c.slice(1)).replace("_", " "),
