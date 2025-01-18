@@ -50,6 +50,8 @@ def parse_raw_description(soup):
     price = None
     short_description = None
     description = None
+    letter_size = (None, None)
+    numerical_size = (None, None)
 
     # TODO: Make sure that multiple matches don't overwrite themselves. What if there are more than one match and the "correct" match is overwritten with the latter false match?
 
