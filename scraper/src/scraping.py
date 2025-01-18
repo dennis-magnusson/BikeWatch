@@ -18,12 +18,16 @@ logger = logging.getLogger(__name__)
 
 def get_category_page_count(base_url: str) -> int:
     url = base_url.format(1)
-
+    logger.debug(f"Getting page count for category {url!r}")
     response = get_request(url)
     soup = BeautifulSoup(response.text, "html.parser")
-    last_page = soup.find("a", class_="ipsPagination_last").get("data-page")
 
-    return int(last_page)
+    last_page_anchors = soup.find("a")
+    print()
+    if last_page_anchor:
+        return int(last_page_anchor.get("data-page"))
+    else:
+        raise ValueError("Could not find last page anchor")
 
 
 def find_listings_for_category(category: Category) -> List[str]:
