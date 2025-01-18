@@ -1,5 +1,6 @@
 import logging
 import os
+import traceback
 from time import sleep
 from typing import Iterable
 
@@ -52,6 +53,7 @@ class Scraper:
                 sleep(self.scraping_frequency_minutes * 60)
         except Exception as e:
             logging.error(f"An error occurred: {e}")
+            traceback.print_exc()
         finally:
             logging.info("Closing sqlalchemy session...")
             self.session.close()
