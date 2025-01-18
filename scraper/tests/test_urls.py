@@ -1,4 +1,4 @@
-from scraper.src.scraping.urls import categories, get_url
+from scraper.src.urls import categories, get_url
 
 
 def test_get_url():

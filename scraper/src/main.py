@@ -59,7 +59,9 @@ class Scraper:
 
 def main():
     logging.basicConfig(
-        level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %(message)s"
+        level=logging.DEBUG,
+        format="%(asctime)s - %(levelname)s - %(message)s",
+        handlers=[logging.FileHandler("scraper.log"), logging.StreamHandler()],
     )
 
     scraping_frequency_minutes = int(os.environ.get("SCRAPING_FREQUENCY_MINUTES", 60))
