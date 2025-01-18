@@ -22,8 +22,8 @@ def get_category_page_count(base_url: str) -> int:
     response = get_request(url)
     soup = BeautifulSoup(response.text, "html.parser")
 
-    last_page_anchors = soup.find("a")
-    print()
+    last_page_li = soup.find("li", class_="ipsPagination_last")
+    last_page_anchor = last_page_li.find("a")
     if last_page_anchor:
         return int(last_page_anchor.get("data-page"))
     else:
