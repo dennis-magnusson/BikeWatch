@@ -1,7 +1,8 @@
+import logging
 import time
 from functools import wraps
+
 import requests
-import logging
 
 
 def rate_limited_request(rate_limit_seconds):
@@ -34,7 +35,7 @@ def rate_limited_request(rate_limit_seconds):
     return decorator
 
 
-@rate_limited_request(rate_limit_seconds=1.0)
+@rate_limited_request(rate_limit_seconds=0.25)
 def get_request(url, **kwargs):
     """Perform a GET request with rate limiting."""
     return requests.get(url, **kwargs)
