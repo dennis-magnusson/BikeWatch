@@ -127,6 +127,8 @@ def get_locations(db=Depends(get_db)):
         locations, key=lambda x: x["name"] != "Uusimaa"
     )  # Sort Uusimaa first always
 
+    # TODO: fix: some {"locationType": "city", "city": null} and {"locationType": "region", "region": null} are still returned
+
     return locations
 
 
