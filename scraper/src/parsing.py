@@ -129,6 +129,9 @@ def parse_price(price_str):
     - Treats all separators as thousand separators if the above condition is not met.
     - Returns None if the conversion fails.
     """
+
+    # TODO: Handle cases where the price_str contains multiple prices eg. "1000€, 900€ without X" or "2000€ -> 1500€" (price lowered)
+
     clean_str = re.sub(r"[^\d,\.]", "", price_str)
     if "," in clean_str and "." not in clean_str:
         clean_str = clean_str.replace(",", ".")
