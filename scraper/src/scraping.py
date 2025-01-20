@@ -57,7 +57,11 @@ def find_listings_for_category(category: Category) -> List[str]:
 
 
 def get_listing_id(url: str) -> str:
-    return url.rstrip("/").split("/")[-1]
+    # TODO: Make more robust
+    # This is a temporary solution to fix url = "https://www.fillaritori.com/topic/220310-giant-propel-advanced-0-2019-aero-xl-60-tuusula/#comments" -> "#comments" (should be "220310-giant-propel-advanced-0-2019-aero-xl-60-tuusula")
+
+    parts = url.rstrip("/").split("/")
+    return parts[-1] if parts[-1][0] != "#" else parts[-2]
 
 
 def scrape_listing(url: str, category_name: str) -> BikeListingData:
