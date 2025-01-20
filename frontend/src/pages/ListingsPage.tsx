@@ -21,6 +21,12 @@ function ListingsPage() {
     const [sizeFlexibility, setSizeFlexibility] = useState<boolean>(true);
     const [keywords, setKeywords] = useState<string[]>([]);
     const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+    const [
+        updateSearchFiltersButtonDisabled,
+        setUpdateSearchFiltersButtonDisabled,
+    ] = useState<boolean>(false);
+    const [resetButtonDisabled, setResetButtonDisabled] =
+        useState<boolean>(true);
 
     const [page, setPage] = useState<number>(1);
     const [totalResults, setTotalResults] = useState<number>(0);
@@ -121,6 +127,20 @@ function ListingsPage() {
         return params.toString();
     };
 
+    const resetSearchFilters = () => {
+        setMaxPrice(0);
+        setMinPrice(0);
+        setLocationFilters([]);
+        setSize(55.0);
+        setShowAllSizes(true);
+        setSizeFlexibility(true);
+        setKeywords([]);
+        setSelectedCategories([]);
+        setSortBy("newest");
+        setPage(1);
+        setResetButtonDisabled(true);
+    };
+
     const handlePageChange = (newPage: number) => {
         if (newPage >= 1 && newPage <= totalPages) {
             setPage(newPage);
@@ -150,6 +170,11 @@ function ListingsPage() {
                     categories={categories}
                     selectedCategories={selectedCategories}
                     setSelectedCategories={setSelectedCategories}
+                    resetSearchFilters={resetSearchFilters}
+                    resetButtonDisabled={resetButtonDisabled}
+                    updateSearchFiltersButtonDisabled={
+                        updateSearchFiltersButtonDisabled
+                    }
                 />
 
                 <SearchResultControls

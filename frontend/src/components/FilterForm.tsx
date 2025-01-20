@@ -29,6 +29,9 @@ type FilterFormProps = {
     categories: string[];
     selectedCategories: string[];
     setSelectedCategories: React.Dispatch<React.SetStateAction<string[]>>;
+    resetSearchFilters: () => void;
+    resetButtonDisabled: boolean;
+    updateSearchFiltersButtonDisabled: boolean;
 };
 
 function FilterForm({
@@ -51,6 +54,9 @@ function FilterForm({
     categories,
     selectedCategories,
     setSelectedCategories,
+    resetSearchFilters,
+    resetButtonDisabled,
+    updateSearchFiltersButtonDisabled,
 }: FilterFormProps) {
     const categoryOptions = categories.map((c) => ({
         id: c,
@@ -132,10 +138,19 @@ function FilterForm({
                     </div>
 
                     <div className="w-52 mt-4">
-                        <Button onClick={updateFilters} disabled={false}>
+                        <Button
+                            onClick={updateFilters}
+                            disabled={updateSearchFiltersButtonDisabled}
+                        >
                             Update filters
                         </Button>{" "}
-                        <Button variant={"outline"}>Reset</Button>
+                        <Button
+                            variant={"outline"}
+                            onClick={resetSearchFilters}
+                            disabled={resetButtonDisabled}
+                        >
+                            Reset
+                        </Button>
                     </div>
                 </CardContent>
             </Card>
