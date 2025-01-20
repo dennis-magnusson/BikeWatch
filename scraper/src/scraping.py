@@ -1,4 +1,5 @@
 import logging
+import re
 from typing import List
 
 from bs4 import BeautifulSoup
@@ -57,11 +58,14 @@ def find_listings_for_category(category: Category) -> List[str]:
 
 
 def get_listing_id(url: str) -> str:
-    # TODO: Make more robust
-    # This is a temporary solution to fix url = "https://www.fillaritori.com/topic/220310-giant-propel-advanced-0-2019-aero-xl-60-tuusula/#comments" -> "#comments" (should be "220310-giant-propel-advanced-0-2019-aero-xl-60-tuusula")
-
-    parts = url.rstrip("/").split("/")
-    return parts[-1] if parts[-1][0] != "#" else parts[-2]
+    # TODO: Make sure this is robust and truly unique
+    id_digits = re.findall(r"\d+", url)
+    if id_digits:
+        return id_digits[0]
+    else:
+        logging.error(f"Could not find id for url {url}")
+        parts = url.rstrip("/").split("/")
+        return parts[-1] if parts[-1][0] != "#" else parts[-2]
 
 
 def scrape_listing(url: str, category_name: str) -> BikeListingData:
