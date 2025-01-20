@@ -76,10 +76,12 @@ def main():
 
     logging.info("Database connected")
 
-    Base.metadata.drop_all(engine)
-    logging.info("Database schema dropped")
-    Base.metadata.create_all(engine)
-    logging.info("Database schema created")
+    # TODO: Implement a better way to handle database schema changes
+
+    # Base.metadata.drop_all(engine)
+    # logging.info("Database schema dropped")
+    # Base.metadata.create_all(engine)
+    # logging.info("Database schema created")
 
     scraper = Scraper(session, scraping_frequency_minutes, scraping_page_limit)
     scraper.run()
