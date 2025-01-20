@@ -91,6 +91,8 @@ def scrape_listing(url: str, category_name: str) -> BikeListingData:
     ) = parse_raw_description(soup)
     images = parse_raw_images(soup)
 
+    # TODO: Remove listings that are over a certain age, contain the word "sold"/"myyty" or otherwise indicate that they are no longer available
+
     return BikeListingData(
         id=id,
         title=title,
