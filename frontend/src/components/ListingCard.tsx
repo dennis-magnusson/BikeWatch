@@ -63,8 +63,7 @@ function ListingCard({ listing }: ListingCardProps) {
     }
 
     return (
-        // TODO: Make the width completely fill the space even if the content is smaller than the width of the max-w
-        <Card className="max-w-[290px] mx-auto overflow-hidden flex flex-col">
+        <Card className="w-[290px] mx-auto overflow-hidden flex flex-col">
             <div className="space-y-2">
                 <div className="relative w-full h-44">
                     <img
