@@ -28,7 +28,10 @@ function SearchableMultiselect({
 }: SearchableMultiselectProps) {
     const [open, setOpen] = React.useState(false);
 
-    // TODO: Confirm that locations in location array are non-null
+    // Filter out locations that are null or do not have a name
+    const validLocations = locations.filter(
+        (location) => location && location.name
+    );
 
     const handleSelect = (currentLocation: Location) => {
         if (currentLocation) {
@@ -71,7 +74,7 @@ function SearchableMultiselect({
                         <CommandList>
                             <CommandEmpty>No locations found</CommandEmpty>
                             <CommandGroup>
-                                {locations.map((location) => (
+                                {validLocations.map((location) => (
                                     <CommandItem
                                         key={location.name}
                                         value={location.name}
@@ -97,7 +100,7 @@ function SearchableMultiselect({
             </Popover>
             <div className="flex flex-wrap gap-2">
                 {locationFilters.map((loc) => {
-                    const location = locations.find((l) => l === loc);
+                    const location = validLocations.find((l) => l === loc);
                     return (
                         <Badge key={loc.name} variant="secondary">
                             {location?.name}
