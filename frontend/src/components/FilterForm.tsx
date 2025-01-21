@@ -14,6 +14,8 @@ type FilterFormProps = {
     setMaxPrice: React.Dispatch<React.SetStateAction<number>>;
     minPrice: number;
     setMinPrice: React.Dispatch<React.SetStateAction<number>>;
+    hasError: boolean;
+    setHasError: React.Dispatch<React.SetStateAction<boolean>>;
     locations: Location[];
     locationFilters: Location[];
     setLocationFilters: React.Dispatch<React.SetStateAction<Location[]>>;
@@ -57,12 +59,35 @@ function FilterForm({
     resetSearchFilters,
     resetButtonDisabled,
     updateSearchFiltersButtonDisabled,
+    hasError,
+    setHasError,
 }: FilterFormProps) {
+    const validatePrices = () => {
+        if (minPrice > maxPrice) {
+            setHasError(true);
+            return false;
+        }
+        setHasError(false);
+        return true;
+    };
+
+    const handleUpdateFilters = () => {
+        if (validatePrices()) {
+            updateFilters();
+        }
+    };
+
+    const handleResetFilters = () => {
+        setHasError(false);
+        resetSearchFilters();
+    };
+
     const categoryOptions = categories.map((c) => ({
         id: c,
         value: c,
         label: (c.charAt(0).toUpperCase() + c.slice(1)).replace("_", " "),
     }));
+
     return (
         <div className="w-full">
             <Card>
@@ -85,6 +110,8 @@ function FilterForm({
                                     setMinPrice={setMinPrice}
                                     maxPrice={maxPrice}
                                     setMaxPrice={setMaxPrice}
+                                    validatePrices={validatePrices}
+                                    hasError={hasError}
                                 />
                             </FormInput>
                             <FormInput>
@@ -139,14 +166,14 @@ function FilterForm({
 
                     <div className="w-52 mt-4">
                         <Button
-                            onClick={updateFilters}
+                            onClick={handleUpdateFilters}
                             disabled={updateSearchFiltersButtonDisabled}
                         >
                             Update filters
                         </Button>{" "}
                         <Button
                             variant={"outline"}
-                            onClick={resetSearchFilters}
+                            onClick={handleResetFilters}
                             disabled={resetButtonDisabled}
                         >
                             Reset

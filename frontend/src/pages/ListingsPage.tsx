@@ -13,10 +13,12 @@ function ListingsPage() {
 
     const [sortBy, setSortBy] = useState<SortBy>("newest");
 
-    const [maxPrice, setMaxPrice] = useState<number>(0);
+    const [maxPrice, setMaxPrice] = useState<number>(Infinity);
     const [minPrice, setMinPrice] = useState<number>(0);
+    const [hasErrorInPriceFilter, setHasErrorInPriceFilter] =
+        useState<boolean>(false);
     const [locationFilters, setLocationFilters] = useState<Location[]>([]);
-    const [size, setSize] = useState<number>(55.0);
+    const [size, setSize] = useState<number>(56.0);
     const [showAllSizes, setShowAllSizes] = useState<boolean>(true);
     const [sizeFlexibility, setSizeFlexibility] = useState<boolean>(true);
     const [keywords, setKeywords] = useState<string[]>([]);
@@ -26,7 +28,7 @@ function ListingsPage() {
         setUpdateSearchFiltersButtonDisabled,
     ] = useState<boolean>(false);
     const [resetButtonDisabled, setResetButtonDisabled] =
-        useState<boolean>(true);
+        useState<boolean>(false);
 
     const [page, setPage] = useState<number>(1);
     const [totalResults, setTotalResults] = useState<number>(0);
@@ -45,10 +47,35 @@ function ListingsPage() {
         fetchListings();
     }, [sortBy, page]);
 
+    useEffect(() => {
+        const isFiltersChanged =
+            maxPrice !== Infinity ||
+            minPrice !== 0 ||
+            locationFilters.length > 0 ||
+            size !== 55.0 ||
+            !showAllSizes ||
+            !sizeFlexibility ||
+            keywords.length > 0 ||
+            selectedCategories.length > 0 ||
+            sortBy !== "newest";
+
+        setUpdateSearchFiltersButtonDisabled(!isFiltersChanged);
+        setResetButtonDisabled(!isFiltersChanged);
+    }, [
+        maxPrice,
+        minPrice,
+        locationFilters,
+        size,
+        showAllSizes,
+        sizeFlexibility,
+        keywords,
+        selectedCategories,
+        sortBy,
+    ]);
+
     const fetchListings = async () => {
         try {
             const url = `${BASE_URL}/listings?${formatUrlParams()}`;
-            console.log(url);
             const response = await axios.get(url);
             setTotalResults(response.data.total);
             setListings(response.data.listings);
@@ -84,7 +111,7 @@ function ListingsPage() {
             params.append("sort_by", sortBy);
         }
 
-        if (maxPrice) {
+        if (maxPrice !== Infinity) {
             params.append("max_price", maxPrice.toString());
         }
 
@@ -128,17 +155,19 @@ function ListingsPage() {
     };
 
     const resetSearchFilters = () => {
-        setMaxPrice(0);
+        setMaxPrice(Infinity);
         setMinPrice(0);
         setLocationFilters([]);
-        setSize(55.0);
+        setSize(56.0);
         setShowAllSizes(true);
         setSizeFlexibility(true);
         setKeywords([]);
         setSelectedCategories([]);
         setSortBy("newest");
         setPage(1);
+        setHasErrorInPriceFilter(false);
         setResetButtonDisabled(true);
+        setUpdateSearchFiltersButtonDisabled(false);
     };
 
     const handlePageChange = (newPage: number) => {
@@ -155,6 +184,8 @@ function ListingsPage() {
                     setMaxPrice={setMaxPrice}
                     minPrice={minPrice}
                     setMinPrice={setMinPrice}
+                    hasError={hasErrorInPriceFilter}
+                    setHasError={setHasErrorInPriceFilter}
                     locations={locations}
                     locationFilters={locationFilters}
                     setLocationFilters={setLocationFilters}
