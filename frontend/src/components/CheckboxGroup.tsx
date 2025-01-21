@@ -15,7 +15,6 @@ function CheckboxGroup({
     setSelectedOptions,
 }: CheckboxGroupProps) {
     const handleCheckboxChange = (value: string) => {
-        console.log(value);
         setSelectedOptions((prev) =>
             prev.includes(value)
                 ? prev.filter((option) => option !== value)
