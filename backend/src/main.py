@@ -108,12 +108,12 @@ def get_listings(
 def get_locations(db=Depends(get_db)):
     # get all unique cities and regions but not null values
     cities = (
-        db.query(BikeListing.city).distinct().filter(BikeListing.city is not None).all()
+        db.query(BikeListing.city).distinct().filter(BikeListing.city.isnot(None)).all()
     )
     regions = (
         db.query(BikeListing.region)
         .distinct()
-        .filter(BikeListing.region is not None)
+        .filter(BikeListing.region.isnot(None))
         .all()
     )
 
@@ -126,8 +126,6 @@ def get_locations(db=Depends(get_db)):
     locations = sorted(
         locations, key=lambda x: x["name"] != "Uusimaa"
     )  # Sort Uusimaa first always
-
-    # TODO: fix: some {"locationType": "city", "city": null} and {"locationType": "region", "region": null} are still returned
 
     return locations
 
