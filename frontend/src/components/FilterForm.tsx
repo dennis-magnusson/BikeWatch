@@ -33,7 +33,6 @@ type FilterFormProps = {
     setSelectedCategories: React.Dispatch<React.SetStateAction<string[]>>;
     resetSearchFilters: () => void;
     resetButtonDisabled: boolean;
-    updateSearchFiltersButtonDisabled: boolean;
 };
 
 function FilterForm({
@@ -58,7 +57,6 @@ function FilterForm({
     setSelectedCategories,
     resetSearchFilters,
     resetButtonDisabled,
-    updateSearchFiltersButtonDisabled,
     hasError,
     setHasError,
 }: FilterFormProps) {
@@ -165,10 +163,7 @@ function FilterForm({
                     </div>
 
                     <div className="w-52 mt-4">
-                        <Button
-                            onClick={handleUpdateFilters}
-                            disabled={updateSearchFiltersButtonDisabled}
-                        >
+                        <Button onClick={handleUpdateFilters}>
                             Update filters
                         </Button>{" "}
                         <Button

@@ -4,6 +4,14 @@ import FilterForm from "../components/FilterForm";
 import ListingCard from "../components/ListingCard";
 import { PaginationBar } from "../components/PaginationBar";
 import { SearchResultControls } from "../components/SearchResultControls";
+import {
+    DEFAULT_MAX_PRICE,
+    DEFAULT_MIN_PRICE,
+    DEFAULT_SHOW_ALL_SIZES,
+    DEFAULT_SIZE,
+    DEFAULT_SIZE_FLEXIBILITY,
+    DEFAULT_SORT_BY,
+} from "../constants";
 import { Listing, Location, SortBy } from "../types";
 
 function ListingsPage() {
@@ -11,22 +19,23 @@ function ListingsPage() {
     const [locations, setLocations] = useState<Location[]>([]);
     const [categories, setCategories] = useState<string[]>([]);
 
-    const [sortBy, setSortBy] = useState<SortBy>("newest");
+    const [sortBy, setSortBy] = useState<SortBy>(DEFAULT_SORT_BY);
 
-    const [maxPrice, setMaxPrice] = useState<number>(Infinity);
-    const [minPrice, setMinPrice] = useState<number>(0);
+    const [maxPrice, setMaxPrice] = useState<number>(DEFAULT_MAX_PRICE);
+    const [minPrice, setMinPrice] = useState<number>(DEFAULT_MIN_PRICE);
     const [hasErrorInPriceFilter, setHasErrorInPriceFilter] =
         useState<boolean>(false);
     const [locationFilters, setLocationFilters] = useState<Location[]>([]);
-    const [size, setSize] = useState<number>(56.0);
-    const [showAllSizes, setShowAllSizes] = useState<boolean>(true);
-    const [sizeFlexibility, setSizeFlexibility] = useState<boolean>(true);
+    const [size, setSize] = useState<number>(DEFAULT_SIZE);
+    const [showAllSizes, setShowAllSizes] = useState<boolean>(
+        DEFAULT_SHOW_ALL_SIZES
+    );
+    const [sizeFlexibility, setSizeFlexibility] = useState<boolean>(
+        DEFAULT_SIZE_FLEXIBILITY
+    );
     const [keywords, setKeywords] = useState<string[]>([]);
     const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-    const [
-        updateSearchFiltersButtonDisabled,
-        setUpdateSearchFiltersButtonDisabled,
-    ] = useState<boolean>(false);
+
     const [resetButtonDisabled, setResetButtonDisabled] =
         useState<boolean>(false);
 
@@ -49,17 +58,16 @@ function ListingsPage() {
 
     useEffect(() => {
         const isFiltersChanged =
-            maxPrice !== Infinity ||
-            minPrice !== 0 ||
+            maxPrice !== DEFAULT_MAX_PRICE ||
+            minPrice !== DEFAULT_MIN_PRICE ||
             locationFilters.length > 0 ||
-            size !== 55.0 ||
-            !showAllSizes ||
-            !sizeFlexibility ||
+            size !== DEFAULT_SIZE ||
+            showAllSizes != DEFAULT_SHOW_ALL_SIZES ||
+            sizeFlexibility != DEFAULT_SIZE_FLEXIBILITY ||
             keywords.length > 0 ||
             selectedCategories.length > 0 ||
-            sortBy !== "newest";
+            sortBy !== DEFAULT_SORT_BY;
 
-        setUpdateSearchFiltersButtonDisabled(!isFiltersChanged);
         setResetButtonDisabled(!isFiltersChanged);
     }, [
         maxPrice,
@@ -155,19 +163,18 @@ function ListingsPage() {
     };
 
     const resetSearchFilters = () => {
-        setMaxPrice(Infinity);
-        setMinPrice(0);
+        setMaxPrice(DEFAULT_MAX_PRICE);
+        setMinPrice(DEFAULT_MIN_PRICE);
         setLocationFilters([]);
-        setSize(56.0);
-        setShowAllSizes(true);
-        setSizeFlexibility(true);
+        setSize(DEFAULT_SIZE);
+        setShowAllSizes(DEFAULT_SHOW_ALL_SIZES);
+        setSizeFlexibility(DEFAULT_SIZE_FLEXIBILITY);
         setKeywords([]);
         setSelectedCategories([]);
-        setSortBy("newest");
+        setSortBy(DEFAULT_SORT_BY);
         setPage(1);
         setHasErrorInPriceFilter(false);
         setResetButtonDisabled(true);
-        setUpdateSearchFiltersButtonDisabled(false);
     };
 
     const handlePageChange = (newPage: number) => {
@@ -203,9 +210,6 @@ function ListingsPage() {
                     setSelectedCategories={setSelectedCategories}
                     resetSearchFilters={resetSearchFilters}
                     resetButtonDisabled={resetButtonDisabled}
-                    updateSearchFiltersButtonDisabled={
-                        updateSearchFiltersButtonDisabled
-                    }
                 />
 
                 <SearchResultControls
