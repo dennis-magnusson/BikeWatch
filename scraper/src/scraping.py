@@ -1,6 +1,6 @@
 import logging
 import re
-from typing import List
+from typing import List, Optional
 
 from bs4 import BeautifulSoup
 from parsing import (
@@ -8,6 +8,7 @@ from parsing import (
     parse_raw_description,
     parse_raw_images,
     parse_raw_title,
+    sold_keywords,
 )
 from request_throttler import get_request
 from urls import Category, get_url
@@ -68,13 +69,21 @@ def get_listing_id(url: str) -> str:
         return parts[-1] if parts[-1][0] != "#" else parts[-2]
 
 
-def scrape_listing(url: str, category_name: str) -> BikeListingData:
+def scrape_listing(url: str, category_name: str) -> Optional[BikeListingData]:
     response = get_request(url)
     soup = BeautifulSoup(response.text, "html.parser")
 
     id = get_listing_id(url)
     title = parse_raw_title(soup, category_name)
     date_posted = parse_date_posted(soup)
+
+    # if the title contains any of the words in sold_keywords then return None
+
+    most_likely_sold = any(keyword in title.lower() for keyword in sold_keywords)
+    too_old = False  # TODO: Implement this
+    if most_likely_sold or too_old:
+        return None
+
     (
         brand,
         model,

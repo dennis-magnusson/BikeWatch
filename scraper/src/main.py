@@ -30,13 +30,15 @@ class Scraper:
         listing_urls: str = find_listings_for_category(category)
         logging.debug("Found {} listings".format(len(listing_urls)))
 
-        listings: Iterable[BikeListingData] = [
-            scrape_listing(listing, category_name=category.name)
-            for listing in listing_urls
+        scraped_listings = [
+            scrape_listing(url, category_name=category.name) for url in listing_urls
         ]
-        logging.debug("Scraped {} listings".format(len(listings)))
+        valid_listings = [
+            listing for listing in scraped_listings if listing is not None
+        ]
+        logging.debug("Scraped {} listings".format(len(valid_listings)))
 
-        sync_listings(self.session, listings)
+        sync_listings(self.session, valid_listings)
         logging.info("Listings synced to database")
 
     def run(self):
@@ -78,10 +80,10 @@ def main():
 
     # TODO: Implement a better way to handle database schema changes
 
-    # Base.metadata.drop_all(engine)
-    # logging.info("Database schema dropped")
-    # Base.metadata.create_all(engine)
-    # logging.info("Database schema created")
+    Base.metadata.drop_all(engine)
+    logging.info("Database schema dropped")
+    Base.metadata.create_all(engine)
+    logging.info("Database schema created")
 
     scraper = Scraper(session, scraping_frequency_minutes, scraping_page_limit)
     scraper.run()

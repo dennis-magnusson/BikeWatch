@@ -15,6 +15,8 @@ keywords = {
     "description": ["kuvaus"],
 }
 
+sold_keywords = ["myyty", "sold", "varattu", "reserved"]
+
 words_to_remove_from_titles = {
     "road": [
         "maantiepyörä",
