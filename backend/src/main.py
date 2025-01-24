@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import create_engine, func, or_
 from sqlalchemy.orm import Session, joinedload, sessionmaker
 
-from common.models import BikeListing, Size
+from common import BikeListing, UserAlert
 
 app = FastAPI()
 
@@ -141,6 +141,12 @@ def get_categories(db=Depends(get_db)):
     )
 
     return [category[0] for category in categories]
+
+
+@app.get("/alerts/")
+def get_alerts(db: Depends(get_db)):
+    alerts = db.query(UserAlert).all()
+    return alerts
 
 
 if __name__ == "__main__":

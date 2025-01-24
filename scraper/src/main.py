@@ -2,7 +2,6 @@ import logging
 import os
 import traceback
 from time import sleep
-from typing import Iterable
 
 from db_operations import sync_listings
 from scraping import find_listings_for_category, scrape_listing
@@ -10,7 +9,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import Session, sessionmaker
 from urls import Category, categories
 
-from common.models import Base, BikeListingData
+from common.models.base import Base
 
 
 class Scraper:

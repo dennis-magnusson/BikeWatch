@@ -1,7 +1,7 @@
 import re
 from typing import List, Optional, Tuple
 
-from common.models import Size
+from common import Size
 
 keywords = {
     "size": ["koko", "rungon koko", "size", "frame size"],

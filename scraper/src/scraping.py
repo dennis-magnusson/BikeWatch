@@ -13,7 +13,7 @@ from parsing import (
 from request_throttler import get_request
 from urls import Category, get_url
 
-from common.models import BikeListingData
+from common.schemas.bike_listing import BikeListingBase
 
 logger = logging.getLogger(__name__)
 
@@ -34,7 +34,7 @@ def get_category_page_count(base_url: str) -> int:
 
 def find_listings_for_category(category: Category) -> List[str]:
     base_url = get_url(category)
-    pages = get_category_page_count(base_url)
+    pages = 1  # get_category_page_count(base_url)
     logger.info(f"Found {pages} pages for category {category.name}")
     urls = [base_url.format(page) for page in range(1, pages + 1)]
 
@@ -69,15 +69,13 @@ def get_listing_id(url: str) -> str:
         return parts[-1] if parts[-1][0] != "#" else parts[-2]
 
 
-def scrape_listing(url: str, category_name: str) -> Optional[BikeListingData]:
+def scrape_listing(url: str, category_name: str) -> Optional[BikeListingBase]:
     response = get_request(url)
     soup = BeautifulSoup(response.text, "html.parser")
 
     id = get_listing_id(url)
     title = parse_raw_title(soup, category_name)
     date_posted = parse_date_posted(soup)
-
-    # if the title contains any of the words in sold_keywords then return None
 
     most_likely_sold = any(keyword in title.lower() for keyword in sold_keywords)
     too_old = False  # TODO: Implement this
@@ -100,9 +98,7 @@ def scrape_listing(url: str, category_name: str) -> Optional[BikeListingData]:
     ) = parse_raw_description(soup)
     images = parse_raw_images(soup)
 
-    # TODO: Remove listings that are over a certain age, contain the word "sold"/"myyty" or otherwise indicate that they are no longer available
-
-    return BikeListingData(
+    return BikeListingBase(
         id=id,
         title=title,
         brand=brand,
@@ -112,13 +108,13 @@ def scrape_listing(url: str, category_name: str) -> Optional[BikeListingData]:
         date_posted=date_posted,
         number_size_min=number_size_min,
         number_size_max=number_size_max,
-        letter_size_min=letter_size_min,
-        letter_size_max=letter_size_max,
-        images=images,
+        letter_size_min=letter_size_min.value if letter_size_min else None,
+        letter_size_max=letter_size_max.value if letter_size_max else None,
         price=price,
         city=city,
         region=region,
         description=description,
         short_description=short_description,
+        images=images,
         category=category_name,
     )

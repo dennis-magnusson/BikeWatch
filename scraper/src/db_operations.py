@@ -1,10 +1,11 @@
 import logging
 from typing import Iterable
 
-from common.models import BikeImage, BikeListing, BikeListingData
+from common.models import BikeImage, BikeListing
+from common.schemas.bike_listing import BikeListingBase
 
 
-def sync_listings(session, scraped_data: Iterable[BikeListingData]):
+def sync_listings(session, scraped_data: Iterable[BikeListingBase]):
     existing_bike_ids = {bike.id for bike in session.query(BikeListing.id).all()}
 
     for item in scraped_data:
@@ -14,7 +15,7 @@ def sync_listings(session, scraped_data: Iterable[BikeListingData]):
             logging.info(f"Bike with ID {item.id} already exists. Skipping.")
 
 
-def add_listing(session, listing_data: BikeListingData):
+def add_listing(session, listing_data: BikeListingBase):
     bike = BikeListing(
         id=listing_data.id,
         title=listing_data.title,
@@ -23,12 +24,8 @@ def add_listing(session, listing_data: BikeListingData):
         year=listing_data.year,
         url=listing_data.url,
         date_posted=listing_data.date_posted,
-        letter_size_min=listing_data.letter_size_min.value
-        if listing_data.letter_size_min
-        else None,
-        letter_size_max=listing_data.letter_size_max.value
-        if listing_data.letter_size_max
-        else None,
+        letter_size_min=listing_data.letter_size_min,
+        letter_size_max=listing_data.letter_size_max,
         number_size_min=listing_data.number_size_min,
         number_size_max=listing_data.number_size_max,
         price=listing_data.price,

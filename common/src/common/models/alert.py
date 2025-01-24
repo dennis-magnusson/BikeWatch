@@ -1,7 +1,7 @@
 from sqlalchemy import Boolean, Column, Float, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
-from common.src.database import Base
+from common.models.base import Base
 
 
 class UserAlert(Base):
@@ -26,4 +26,4 @@ class AlertedListing(Base):
     id = Column(Integer, primary_key=True, index=True)
     alert_id = Column(Integer, ForeignKey("user_alert.id"))
     listing_id = Column(Integer, ForeignKey("bike.id"))
-    alert = relationship("UserAlert", back_populates="alerted_listings")
+    user_alert = relationship("UserAlert", back_populates="alerted_listings")
