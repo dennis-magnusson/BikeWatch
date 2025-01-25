@@ -13,7 +13,7 @@ router = APIRouter()
 
 @router.post("/alerts/", response_model=UserAlertResponse)
 def create_alert(alert: UserAlertCreate, db: Session = Depends(get_db)):
-    db_alert = UserAlert(**alert.dict())
+    db_alert = UserAlert(**alert.model_dump())
     db.add(db_alert)
     db.commit()
     db.refresh(db_alert)
@@ -38,7 +38,7 @@ def update_alert(alert_id: int, alert: UserAlertCreate, db: Session = Depends(ge
     db_alert = db.query(UserAlert).filter(UserAlert.id == alert_id).first()
     if db_alert is None:
         raise HTTPException(status_code=404, detail="Alert not found")
-    for key, value in alert.dict().items():
+    for key, value in alert.model_dump().items():
         setattr(db_alert, key, value)
     db.commit()
     db.refresh(db_alert)
