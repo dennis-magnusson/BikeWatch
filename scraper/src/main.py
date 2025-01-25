@@ -1,3 +1,4 @@
+import argparse
 import logging
 import os
 import traceback
@@ -17,16 +18,18 @@ class Scraper:
         self,
         session: Session,
         scraping_frequency_minutes: int,
-        scraping_page_limit: int,
+        single_page: bool = False,
     ):
         self.session = session
         self.scraping_frequency_minutes = scraping_frequency_minutes
-        self.scraping_page_limit = scraping_page_limit
+        self.single_page = single_page
 
     def scrape_category(self, category: Category):
         logging.info(f"Scraping category ===== {category.name} =====")
 
-        listing_urls: str = find_listings_for_category(category)
+        listing_urls: str = find_listings_for_category(
+            category, single_page=self.single_page
+        )
         logging.debug("Found {} listings".format(len(listing_urls)))
 
         scraped_listings = [
@@ -67,8 +70,17 @@ def main():
         handlers=[logging.FileHandler("scraper.log"), logging.StreamHandler()],
     )
 
+    parser = argparse.ArgumentParser(description="scraper")
+    parser.add_argument(
+        "--single-page",
+        action="store_true",
+        help="Scrape only a single page of listings and exit",
+    )
+    args = parser.parse_args()
+
+    logging.debug(f"Starting scraper, single_page={args.single_page}")
+
     scraping_frequency_minutes = int(os.environ.get("SCRAPING_FREQUENCY_MINUTES", 60))
-    scraping_page_limit = int(os.environ.get("PAGE_COUNT", 50))
 
     logging.info("Opening sqlalchemy session to sqlite...")
     engine = create_engine("sqlite:///data/bikes.db")
@@ -84,7 +96,7 @@ def main():
     Base.metadata.create_all(engine)
     logging.info("Database schema created")
 
-    scraper = Scraper(session, scraping_frequency_minutes, scraping_page_limit)
+    scraper = Scraper(session, scraping_frequency_minutes, args.single_page)
     scraper.run()
 
 

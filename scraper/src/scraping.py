@@ -32,9 +32,9 @@ def get_category_page_count(base_url: str) -> int:
         raise ValueError("Could not find last page anchor")
 
 
-def find_listings_for_category(category: Category) -> List[str]:
+def find_listings_for_category(category: Category, single_page: bool) -> List[str]:
     base_url = get_url(category)
-    pages = 1  # get_category_page_count(base_url)
+    pages = 1 if single_page else get_category_page_count(base_url)
     logger.info(f"Found {pages} pages for category {category.name}")
     urls = [base_url.format(page) for page in range(1, pages + 1)]
 
