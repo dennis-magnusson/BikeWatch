@@ -15,28 +15,28 @@ def sync_listings(session, scraped_data: Iterable[BikeListingBase]):
             logging.info(f"Bike with ID {item.id} already exists. Skipping.")
 
 
-def add_listing(session, listing_data: BikeListingBase):
+def add_listing(session, listing: BikeListingBase):
     bike = BikeListing(
-        id=listing_data.id,
-        title=listing_data.title,
-        brand=listing_data.brand,
-        model=listing_data.model,
-        year=listing_data.year,
-        url=listing_data.url,
-        date_posted=listing_data.date_posted,
-        letter_size_min=listing_data.letter_size_min,
-        letter_size_max=listing_data.letter_size_max,
-        number_size_min=listing_data.number_size_min,
-        number_size_max=listing_data.number_size_max,
-        price=listing_data.price,
-        city=listing_data.city,
-        region=listing_data.region,
-        description=listing_data.description,
-        short_description=listing_data.short_description,
-        category=listing_data.category,
+        id=listing.id,
+        title=listing.title,
+        brand=listing.brand,
+        model=listing.model,
+        year=listing.year,
+        url=listing.url,
+        date_posted=listing.date_posted,
+        letter_size_min=listing.letter_size_min,
+        letter_size_max=listing.letter_size_max,
+        number_size_min=listing.number_size_min,
+        number_size_max=listing.number_size_max,
+        price=listing.price,
+        city=listing.city,
+        region=listing.region,
+        description=listing.description,
+        short_description=listing.short_description,
+        category=listing.category,
     )
 
-    for image_url in listing_data.images:
+    for image_url in listing.images:
         bike.images.append(BikeImage(image_url=image_url))
 
     session.add(bike)

@@ -30,6 +30,7 @@ class BikeListingBase(BaseModel):
     description: Optional[str] = None
     short_description: Optional[str] = None
     images: List[str] = []
+    category: Optional[str] = None
 
     class Config:
         orm_mode = True
