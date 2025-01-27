@@ -2,8 +2,12 @@ import logging
 import os
 
 from dotenv import load_dotenv
+from sqlalchemy.orm import Session
 from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
+
+from backend.src.database import get_db
+from common.models.alert import UserAlert
 
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
@@ -18,15 +22,43 @@ if not TELEGRAM_BOT_TOKEN:
 
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    # TODO: Implement these steps
-    # get the id passed as the start command argument
-    # check database if the id exists
-    # if not, return an error message
-    # if yes, return a success message
-    # persist the chat_id and the user_id in the database with the filter_id
-    await context.bot.send_message(
-        chat_id=update.effective_chat.id, text="I'm a bot, please talk to me!"
-    )
+    args = context.args
+    if args:
+        alert_id = args[0]
+        chat_id = update.effective_chat.id
+
+        db: Session = next(get_db())
+
+        user_alert = db.query(UserAlert).filter(UserAlert.id == alert_id).first()
+
+        if user_alert:
+            if user_alert.chat_id is None:
+                user_alert.chat_id = chat_id
+                db.commit()
+                await context.bot.send_message(
+                    chat_id=chat_id,
+                    text="Your alert has been successfully registered.",
+                )
+            elif user_alert.chat_id == chat_id:
+                await context.bot.send_message(
+                    chat_id=chat_id,
+                    text="This alert is already associated with your chat ID.",
+                )
+            else:
+                await context.bot.send_message(
+                    chat_id=chat_id,
+                    text="This alert is already associated with another chat ID.",
+                )
+        else:
+            await context.bot.send_message(
+                chat_id=chat_id,
+                text="Alert ID not found.",
+            )
+    else:
+        await context.bot.send_message(
+            chat_id=update.effective_chat.id,
+            text="Please provide your alert id. Eg. /start <id>",
+        )
 
 
 if __name__ == "__main__":
