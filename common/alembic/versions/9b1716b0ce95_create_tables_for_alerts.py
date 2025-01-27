@@ -22,7 +22,10 @@ def upgrade() -> None:
     op.create_table(
         "user_alert",
         sa.Column("id", sa.Integer(), primary_key=True),
-        sa.Column("email", sa.String(), nullable=False),
+        sa.Column(
+            "chat_id",
+            sa.String(),
+        ),
         sa.Column("min_price", sa.Float()),
         sa.Column("max_price", sa.Float()),
         sa.Column("category", sa.String()),
