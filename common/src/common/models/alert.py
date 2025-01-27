@@ -8,7 +8,7 @@ class UserAlert(Base):
     __tablename__ = "user_alert"
 
     id = Column(Integer, primary_key=True)
-    email = Column(String, nullable=False)
+    chat_id = Column(String)
     min_price = Column(Float)
     max_price = Column(Float)
     category = Column(String)

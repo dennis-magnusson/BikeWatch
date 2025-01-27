@@ -4,7 +4,7 @@ from pydantic import BaseModel
 
 
 class UserAlertCreate(BaseModel):
-    email: str
+    chat_id: Optional[str] = None
     min_price: Optional[float] = None
     max_price: Optional[float] = None
     category: Optional[str] = None
@@ -16,7 +16,6 @@ class UserAlertCreate(BaseModel):
 
 class UserAlertResponse(BaseModel):
     id: int
-    email: str
     min_price: Optional[float] = None
     max_price: Optional[float] = None
     category: Optional[str] = None
