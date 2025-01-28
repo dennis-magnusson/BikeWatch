@@ -4,13 +4,11 @@ import os
 import traceback
 from time import sleep
 
-from db_operations import sync_listings
+from db_operations import add_listing
 from scraping import find_listings_for_category, scrape_listing
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session, sessionmaker
 from urls import Category, categories
-
-from common.models.base import Base
 
 
 class Scraper:
@@ -32,16 +30,13 @@ class Scraper:
         )
         logging.debug("Found {} listings".format(len(listing_urls)))
 
-        scraped_listings = [
-            scrape_listing(url, category_name=category.name) for url in listing_urls
-        ]
-        valid_listings = [
-            listing for listing in scraped_listings if listing is not None
-        ]
-        logging.debug("Scraped {} listings".format(len(valid_listings)))
-
-        sync_listings(self.session, valid_listings)
-        logging.info("Listings synced to database")
+        for url in listing_urls:
+            listing = scrape_listing(
+                url, category_name=category.name, session=self.session
+            )
+            if listing is not None:
+                add_listing(self.session, listing)
+                logging.debug(f"Listing {listing.id} synced to database")
 
     def run(self):
         try:
@@ -91,10 +86,10 @@ def main():
 
     # TODO: Implement a better way to handle database schema changes
 
-    Base.metadata.drop_all(engine)
-    logging.info("Database schema dropped")
-    Base.metadata.create_all(engine)
-    logging.info("Database schema created")
+    # Base.metadata.drop_all(engine)
+    # logging.info("Database schema dropped")
+    # Base.metadata.create_all(engine)
+    # logging.info("Database schema created")
 
     scraper = Scraper(session, scraping_frequency_minutes, args.single_page)
     scraper.run()

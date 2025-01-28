@@ -2,6 +2,7 @@ import logging
 import re
 from typing import List, Optional
 
+from alerting import has_been_alerted, matches_alert, send_telegram_message
 from bs4 import BeautifulSoup
 from parsing import (
     parse_date_posted,
@@ -11,8 +12,10 @@ from parsing import (
     sold_keywords,
 )
 from request_throttler import get_request
+from sqlalchemy.orm import Session
 from urls import Category, get_url
 
+from common.models.alert import AlertedListing, UserAlert
 from common.schemas.bike_listing import BikeListingBase
 
 logger = logging.getLogger(__name__)
@@ -69,7 +72,9 @@ def get_listing_id(url: str) -> str:
         return parts[-1] if parts[-1][0] != "#" else parts[-2]
 
 
-def scrape_listing(url: str, category_name: str) -> Optional[BikeListingBase]:
+def scrape_listing(
+    url: str, category_name: str, session: Session
+) -> Optional[BikeListingBase]:
     response = get_request(url)
     soup = BeautifulSoup(response.text, "html.parser")
 
@@ -98,7 +103,7 @@ def scrape_listing(url: str, category_name: str) -> Optional[BikeListingBase]:
     ) = parse_raw_description(soup)
     images = parse_raw_images(soup)
 
-    return BikeListingBase(
+    listing = BikeListingBase(
         id=id,
         title=title,
         brand=brand,
@@ -108,13 +113,29 @@ def scrape_listing(url: str, category_name: str) -> Optional[BikeListingBase]:
         date_posted=date_posted,
         number_size_min=number_size_min,
         number_size_max=number_size_max,
-        letter_size_min=letter_size_min.value if letter_size_min else None,
-        letter_size_max=letter_size_max.value if letter_size_max else None,
+        letter_size_min=letter_size_min,
+        letter_size_max=letter_size_max,
         price=price,
         city=city,
         region=region,
         description=description,
         short_description=short_description,
-        images=images,
         category=category_name,
+        images=images,
     )
+
+    # Check alerts and send notifications
+    alerts = session.query(UserAlert).all()
+    logging.debug(alerts)
+    for alert in alerts:
+        if matches_alert(listing, alert) and not has_been_alerted(
+            session, alert.id, listing.id
+        ):
+            send_telegram_message(
+                alert.chat_id, f"New listing found: {listing.title} - {listing.url}"
+            )
+            alerted_listing = AlertedListing(alert_id=alert.id, listing_id=listing.id)
+            session.add(alerted_listing)
+            session.commit()
+
+    return listing

@@ -1,21 +1,20 @@
 import logging
-from typing import Iterable
 
 from common.models import BikeImage, BikeListing
 from common.schemas.bike_listing import BikeListingBase
 
 
-def sync_listings(session, scraped_data: Iterable[BikeListingBase]):
-    existing_bike_ids = {bike.id for bike in session.query(BikeListing.id).all()}
-
-    for item in scraped_data:
-        if item.id not in existing_bike_ids:
-            add_listing(session, item)
-        else:
-            logging.info(f"Bike with ID {item.id} already exists. Skipping.")
-
-
 def add_listing(session, listing: BikeListingBase):
+    existing_bike = (
+        session.query(BikeListing).filter(BikeListing.id == listing.id).first()
+    )
+
+    # TODO: Check if the listing has had a price change and update + alert user
+
+    if existing_bike:
+        logging.info(f"Bike with ID {listing.id} already exists. Skipping.")
+        return
+
     bike = BikeListing(
         id=listing.id,
         title=listing.title,
