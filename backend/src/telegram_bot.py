@@ -3,7 +3,7 @@ import os
 
 from dotenv import load_dotenv
 from sqlalchemy.orm import Session
-from telegram import Update
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
 from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
 
 from backend.src.database import get_db
@@ -23,7 +23,8 @@ if not TELEGRAM_BOT_TOKEN:
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     args = context.args
-    if args:
+
+    if len(args) != 0:  # if chat_id argument is given
         alert_id = args[0]
         chat_id = update.effective_chat.id
 
@@ -32,32 +33,28 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         user_alert = db.query(UserAlert).filter(UserAlert.id == alert_id).first()
 
         if user_alert:
-            if user_alert.chat_id is None:
-                user_alert.chat_id = chat_id
-                db.commit()
-                await context.bot.send_message(
-                    chat_id=chat_id,
-                    text="Your alert has been successfully registered.",
-                )
-            elif user_alert.chat_id == chat_id:
-                await context.bot.send_message(
-                    chat_id=chat_id,
-                    text="This alert is already associated with your chat ID.",
-                )
-            else:
-                await context.bot.send_message(
-                    chat_id=chat_id,
-                    text="This alert is already associated with another chat ID.",
-                )
+            user_alert.chat_id = chat_id
+            db.commit()
+            await context.bot.send_message(
+                chat_id=chat_id,
+                text="Your alert has been successfully registered.",
+            )
         else:
             await context.bot.send_message(
                 chat_id=chat_id,
-                text="Alert ID not found.",
+                text="The id you provided doesn't exist or then it has already been registered.",
             )
     else:
-        await context.bot.send_message(
-            chat_id=update.effective_chat.id,
-            text="Please provide your alert id. Eg. /start <id>",
+        keyboard = [
+            [
+                InlineKeyboardButton("Yes", callback_data="create_filter_yes"),
+                InlineKeyboardButton("No", callback_data="create_filter_no"),
+            ]
+        ]
+        reply_markup = InlineKeyboardMarkup(keyboard)
+        await update.message.reply_text(
+            "Do you want to create a new filter?",
+            reply_markup=reply_markup,
         )
 
 
