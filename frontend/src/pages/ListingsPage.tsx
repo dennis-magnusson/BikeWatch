@@ -4,6 +4,7 @@ import FilterForm from "../components/FilterForm";
 import ListingCard from "../components/ListingCard";
 import { PaginationBar } from "../components/PaginationBar";
 import { SearchResultControls } from "../components/SearchResultControls";
+import { SetAlertDialog } from "../components/SetAlertDialog";
 import {
     DEFAULT_MAX_PRICE,
     DEFAULT_MIN_PRICE,
@@ -212,6 +213,8 @@ function ListingsPage() {
                     resetButtonDisabled={resetButtonDisabled}
                 />
 
+                <SetAlertDialog />
+
                 <SearchResultControls
                     setSortBy={setSortBy}
                     sortBy={sortBy}
@@ -219,6 +222,7 @@ function ListingsPage() {
                     numberOfPages={totalPages}
                     page={page}
                 />
+
                 <div className="grid grid-cols-[repeat(3,1fr)] gap-4 w-full">
                     {listings.map((listing) => (
                         <ListingCard key={listing.id} listing={listing} />

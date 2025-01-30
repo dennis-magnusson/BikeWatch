@@ -4,7 +4,6 @@ import FormInput from "./FormInput";
 import KeywordAdder from "./KeywordAdder";
 import MinMaxInput from "./MinMaxInput";
 import SearchableMultiselect from "./SearchableMultiselect";
-import { SetAlertDialog } from "./SetAlertDialog";
 import { SizeSelector } from "./SizeSelector";
 import { Button } from "./ui/button";
 import { Card, CardContent, CardHeader } from "./ui/card";
@@ -174,7 +173,6 @@ function FilterForm({
                         >
                             Reset
                         </Button>
-                        <SetAlertDialog />
                     </div>
                 </CardContent>
             </Card>
