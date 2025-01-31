@@ -32,7 +32,7 @@ def matches_alert(listing: BikeListingBase, alert: UserAlert) -> bool:
         return False
     if alert.region and listing.region != alert.region:
         return False
-    if alert.size:
+    if alert.size and listing.number_size_max and listing.number_size_min:
         max_size = alert.size + 1 if alert.size_flexibility else alert.size
         min_size = alert.size - 1 if alert.size_flexibility else alert.size
         if listing.number_size_max >= max_size or listing.number_size_min <= min_size:
