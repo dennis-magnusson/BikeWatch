@@ -1,3 +1,4 @@
+import { CATEGORIES } from "../constants";
 import { Location } from "../types";
 import CheckboxGroup from "./CheckboxGroup";
 import FormInput from "./FormInput";
@@ -28,7 +29,6 @@ type FilterFormProps = {
     setSizeFlexibility: React.Dispatch<React.SetStateAction<boolean>>;
     keywords: string[];
     setKeywords: React.Dispatch<React.SetStateAction<string[]>>;
-    categories: string[];
     selectedCategories: string[];
     setSelectedCategories: React.Dispatch<React.SetStateAction<string[]>>;
     resetSearchFilters: () => void;
@@ -52,7 +52,6 @@ function FilterForm({
     setSizeFlexibility,
     keywords,
     setKeywords,
-    categories,
     selectedCategories,
     setSelectedCategories,
     resetSearchFilters,
@@ -80,7 +79,7 @@ function FilterForm({
         resetSearchFilters();
     };
 
-    const categoryOptions = categories.map((c) => ({
+    const categoryOptions = CATEGORIES.map((c) => ({
         id: c,
         value: c,
         label: (c.charAt(0).toUpperCase() + c.slice(1)).replace("_", " "),
@@ -94,6 +93,16 @@ function FilterForm({
                 </CardHeader>
                 <CardContent>
                     <div className="flex flex-row space-x-16">
+                        <div>
+                            <FormInput>
+                                <CheckboxGroup
+                                    label="Type"
+                                    options={categoryOptions}
+                                    selectedOptions={selectedCategories}
+                                    setSelectedOptions={setSelectedCategories}
+                                />
+                            </FormInput>
+                        </div>
                         <div>
                             <FormInput>
                                 <Label
@@ -123,16 +132,6 @@ function FilterForm({
                                     setShowAllSizes={setShowAllSizes}
                                     sizeFlexibility={sizeFlexibility}
                                     setSizeFlexibility={setSizeFlexibility}
-                                />
-                            </FormInput>
-                        </div>
-                        <div>
-                            <FormInput>
-                                <CheckboxGroup
-                                    label="Type"
-                                    options={categoryOptions}
-                                    selectedOptions={selectedCategories}
-                                    setSelectedOptions={setSelectedCategories}
                                 />
                             </FormInput>
                         </div>

@@ -106,16 +106,3 @@ def get_locations(db=Depends(get_db)):
     )  # Sort Uusimaa first always
 
     return locations
-
-
-@router.get("/categories/")
-def get_categories(db=Depends(get_db)):
-    categories = db.query(BikeListing.category).distinct().all()
-
-    # Sort road, gravel and hybrid always first
-    categories = sorted(
-        categories,
-        key=lambda x: x[0] not in ["road", "gravel", "hybrid"],
-    )
-
-    return [category[0] for category in categories]

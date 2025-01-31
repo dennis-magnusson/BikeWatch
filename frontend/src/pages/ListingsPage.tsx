@@ -13,17 +13,11 @@ import {
     DEFAULT_SORT_BY,
 } from "../constants";
 import { Listing, Location, SortBy } from "../types";
-import {
-    fetchCategories,
-    fetchListings,
-    fetchLocations,
-    formatUrlParams,
-} from "../utils/api";
+import { fetchListings, fetchLocations, formatUrlParams } from "../utils/api";
 
 function ListingsPage() {
     const [listings, setListings] = useState<Listing[]>([]);
     const [locations, setLocations] = useState<Location[]>([]);
-    const [categories, setCategories] = useState<string[]>([]);
     const [sortBy, setSortBy] = useState<SortBy>(DEFAULT_SORT_BY);
     const [maxPrice, setMaxPrice] = useState<number>(DEFAULT_MAX_PRICE);
     const [minPrice, setMinPrice] = useState<number>(DEFAULT_MIN_PRICE);
@@ -49,7 +43,6 @@ function ListingsPage() {
     useEffect(() => {
         const initializeData = async () => {
             setLocations(await fetchLocations());
-            setCategories(await fetchCategories());
             updateListings();
         };
         initializeData();
@@ -145,7 +138,6 @@ function ListingsPage() {
                     updateFilters={updateListings}
                     keywords={keywords}
                     setKeywords={setKeywords}
-                    categories={categories}
                     selectedCategories={selectedCategories}
                     setSelectedCategories={setSelectedCategories}
                     resetSearchFilters={resetSearchFilters}
