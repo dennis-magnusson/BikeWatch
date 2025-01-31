@@ -30,32 +30,7 @@ function CheckboxGroup({
 
             <div className="flex flex-row space-x-4">
                 <div className="flex flex-col space-y-2">
-                    {options.slice(0, 6).map((option) => (
-                        <div
-                            key={option.id}
-                            className="flex items-center space-x-2"
-                        >
-                            <Checkbox
-                                id={option.id}
-                                value={option.value}
-                                checked={selectedOptions.includes(option.value)}
-                                onCheckedChange={() =>
-                                    handleCheckboxChange(option.value)
-                                }
-                                className="h-5 w-5"
-                            />
-                            <Label
-                                htmlFor={option.id}
-                                className="text-base font-normal whitespace-nowrap"
-                            >
-                                {option.label}
-                            </Label>
-                        </div>
-                    ))}
-                </div>
-
-                <div className="flex flex-col space-y-2">
-                    {options.slice(6).map((option) => (
+                    {options.map((option) => (
                         <div
                             key={option.id}
                             className="flex items-center space-x-2"
