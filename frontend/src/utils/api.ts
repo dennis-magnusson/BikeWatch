@@ -21,17 +21,6 @@ export const fetchListings = async (
     }
 };
 
-export const fetchCategories = async (): Promise<string[]> => {
-    try {
-        const url = `${BASE_URL}/categories`;
-        const response = await axios.get(url);
-        return response.data;
-    } catch (error) {
-        console.error("Error fetching categories: ", error);
-        return [];
-    }
-};
-
 export const fetchLocations = async (): Promise<Location[]> => {
     try {
         const url = `${BASE_URL}/locations`;
