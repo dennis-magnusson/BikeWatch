@@ -2,7 +2,11 @@ import logging
 import re
 from typing import List, Optional
 
-from alerting import has_been_alerted, matches_alert, send_telegram_message
+from alerting import (
+    has_been_alerted,
+    matches_alert,
+    send_new_listing_notification_telegram,
+)
 from bs4 import BeautifulSoup
 from parsing import (
     parse_date_posted,
@@ -131,8 +135,9 @@ def scrape_listing(
         if matches_alert(listing, alert) and not has_been_alerted(
             session, alert.id, listing.id
         ):
-            send_telegram_message(
-                alert.chat_id, f"New listing found: {listing.title} - {listing.url}"
+            send_new_listing_notification_telegram(
+                alert.chat_id,
+                listing,
             )
             alerted_listing = AlertedListing(alert_id=alert.id, listing_id=listing.id)
             session.add(alerted_listing)

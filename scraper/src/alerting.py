@@ -10,12 +10,42 @@ from common.schemas.bike_listing import BikeListingBase
 TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 
 
-def send_telegram_message(chat_id: str, message: str):
-    url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
+# TODO: Move this to a better place (maybe common package)
+def format_size_string(listing: BikeListingBase) -> str:
+    if listing.letter_size_max and listing.letter_size_min:
+        if listing.letter_size_max == listing.letter_size_min:
+            return listing.letter_size_max
+        else:
+            return f"{listing.letter_size_min} - {listing.letter_size_max}"
+    elif listing.letter_size_min and listing.letter_size_max:
+        if listing.letter_size_min == listing.letter_size_max:
+            return listing.letter_size_min
+        else:
+            return f"{listing.letter_size_min} - {listing.letter_size_max}"
+    else:
+        return "N/A"
+
+
+def send_new_listing_notification_telegram(chat_id: str, listing: BikeListingBase):
+    url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendPhoto"
+
+    size = format_size_string(listing)
+
+    message = (
+        f"<b>{listing.title}</b>\n"
+        f"💰 Price: <strong>{int(listing.price)}€</strong>\n"
+        f"📏 Size: {size}\n"
+        f"📍 Location: {listing.city}, {listing.region}\n\n"
+        f"<a href='{listing.url}'>🔗 View Listing</a>"
+    )
+
     payload = {
         "chat_id": chat_id,
-        "text": message,
+        "photo": listing.images[0],
+        "caption": message,
+        "parse_mode": "HTML",
     }
+
     response = requests.post(url, json=payload)
     logging.debug(f"Telegram message sent. Response: {response.text}")
     response.raise_for_status()
