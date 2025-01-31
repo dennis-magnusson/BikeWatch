@@ -15,13 +15,89 @@ import {
 } from "../constants";
 import { Listing, Location, SortBy } from "../types";
 
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
+const fetchListings = async (params: string) => {
+    try {
+        const url = `${BASE_URL}/listings?${params}`;
+        const response = await axios.get(url);
+        return response.data;
+    } catch (error) {
+        console.error("Error fetching listings: ", error);
+        return { total: 0, listings: [] };
+    }
+};
+
+const fetchCategories = async () => {
+    try {
+        const url = `${BASE_URL}/categories`;
+        const response = await axios.get(url);
+        return response.data;
+    } catch (error) {
+        console.error("Error fetching categories: ", error);
+        return [];
+    }
+};
+
+const fetchLocations = async () => {
+    try {
+        const url = `${BASE_URL}/locations`;
+        const response = await axios.get(url);
+        return response.data;
+    } catch (error) {
+        console.error("Error fetching locations: ", error);
+        return [];
+    }
+};
+
+const formatUrlParams = (filters: any) => {
+    const params = new URLSearchParams();
+
+    if (filters.sortBy) {
+        params.append("sort_by", filters.sortBy);
+    }
+
+    if (filters.maxPrice !== Infinity) {
+        params.append("max_price", filters.maxPrice.toString());
+    }
+
+    if (filters.minPrice) {
+        params.append("min_price", filters.minPrice.toString());
+    }
+
+    if (filters.locationFilters.length > 0) {
+        filters.locationFilters.forEach((loc: Location) => {
+            if (loc.locationType === "city") {
+                params.append("city", loc.name);
+            } else {
+                params.append("region", loc.name);
+            }
+        });
+    }
+
+    if (!filters.showAllSizes) {
+        params.append("size", filters.size.toString());
+        if (filters.sizeFlexibility) {
+            params.append("size_flexibility", "true");
+        }
+    }
+
+    if (filters.selectedCategories.length > 0) {
+        filters.selectedCategories.forEach((category: string) => {
+            params.append("category", category);
+        });
+    }
+
+    params.append("pagination", filters.page.toString());
+
+    return params.toString();
+};
+
 function ListingsPage() {
     const [listings, setListings] = useState<Listing[]>([]);
     const [locations, setLocations] = useState<Location[]>([]);
     const [categories, setCategories] = useState<string[]>([]);
-
     const [sortBy, setSortBy] = useState<SortBy>(DEFAULT_SORT_BY);
-
     const [maxPrice, setMaxPrice] = useState<number>(DEFAULT_MAX_PRICE);
     const [minPrice, setMinPrice] = useState<number>(DEFAULT_MIN_PRICE);
     const [hasErrorInPriceFilter, setHasErrorInPriceFilter] =
@@ -36,25 +112,24 @@ function ListingsPage() {
     );
     const [keywords, setKeywords] = useState<string[]>([]);
     const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-
     const [resetButtonDisabled, setResetButtonDisabled] =
         useState<boolean>(false);
-
     const [page, setPage] = useState<number>(1);
     const [totalResults, setTotalResults] = useState<number>(0);
     const resultsPerPage = 30;
     const totalPages = Math.ceil(totalResults / resultsPerPage);
 
-    const BASE_URL = import.meta.env.VITE_API_BASE_URL;
-
     useEffect(() => {
-        fetchListings();
-        fetchLocations();
-        fetchCategories();
+        const initializeData = async () => {
+            setLocations(await fetchLocations());
+            setCategories(await fetchCategories());
+            updateListings();
+        };
+        initializeData();
     }, []);
 
     useEffect(() => {
-        fetchListings();
+        updateListings();
     }, [sortBy, page]);
 
     useEffect(() => {
@@ -82,85 +157,22 @@ function ListingsPage() {
         sortBy,
     ]);
 
-    const fetchListings = async () => {
-        try {
-            const url = `${BASE_URL}/listings?${formatUrlParams()}`;
-            const response = await axios.get(url);
-            setTotalResults(response.data.total);
-            setListings(response.data.listings);
-        } catch (error) {
-            console.error("Error fetching listings: ", error);
-        }
-    };
-
-    const fetchCategories = async () => {
-        try {
-            const url = `${BASE_URL}/categories`;
-            const response = await axios.get(url);
-            setCategories(response.data);
-        } catch (error) {
-            console.error("Error fetching categories: ", error);
-        }
-    };
-
-    const fetchLocations = async () => {
-        try {
-            const url = `${BASE_URL}/locations`;
-            const response = await axios.get(url);
-            setLocations(response.data);
-        } catch (error) {
-            console.error("Error fetching locations: ", error);
-        }
-    };
-
-    const formatUrlParams = () => {
-        const params = new URLSearchParams();
-
-        if (sortBy) {
-            params.append("sort_by", sortBy);
-        }
-
-        if (maxPrice !== Infinity) {
-            params.append("max_price", maxPrice.toString());
-        }
-
-        if (minPrice) {
-            params.append("min_price", minPrice.toString());
-        }
-
-        if (locationFilters.length > 0) {
-            locationFilters.forEach((loc) => {
-                if (loc.locationType === "city") {
-                    params.append("city", loc.name);
-                } else {
-                    // starts with "region_"
-                    params.append("region", loc.name);
-                }
-            });
-        }
-
-        if (!showAllSizes) {
-            params.append("size", size.toString());
-            if (sizeFlexibility) {
-                params.append("size_flexibility", "true");
-            }
-        }
-
-        // if (keywords.length > 0) {
-        //     keywords.forEach((keyword) => {
-        //         params.append("keywords", keyword);
-        //     });
-        // }
-
-        if (selectedCategories.length > 0) {
-            selectedCategories.forEach((category) => {
-                params.append("category", category);
-            });
-        }
-
-        params.append("pagination", page.toString());
-
-        return params.toString();
+    const updateListings = async () => {
+        const filters = {
+            sortBy,
+            maxPrice,
+            minPrice,
+            locationFilters,
+            size,
+            showAllSizes,
+            sizeFlexibility,
+            selectedCategories,
+            page,
+        };
+        const params = formatUrlParams(filters);
+        const data = await fetchListings(params);
+        setTotalResults(data.total);
+        setListings(data.listings);
     };
 
     const resetSearchFilters = () => {
@@ -203,7 +215,7 @@ function ListingsPage() {
                     setShowAllSizes={setShowAllSizes}
                     sizeFlexibility={sizeFlexibility}
                     setSizeFlexibility={setSizeFlexibility}
-                    updateFilters={fetchListings}
+                    updateFilters={updateListings}
                     keywords={keywords}
                     setKeywords={setKeywords}
                     categories={categories}
