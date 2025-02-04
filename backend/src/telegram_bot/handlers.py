@@ -122,7 +122,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
                 if 42 <= size <= 68:
                     context.user_data["size"] = size
                     await update.message.reply_text(
-                        f"Size '{size}' added. Now, please choose categories to filter."
+                        f"Size {size}cm added. Now, please choose bike category."
                     )
                     context.user_data["filter_stage"] = "category"
                     keyboard = [
