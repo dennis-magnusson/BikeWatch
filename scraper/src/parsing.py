@@ -1,5 +1,8 @@
 import re
+from dataclasses import dataclass
 from typing import List, Optional, Tuple
+
+from bs4 import BeautifulSoup
 
 from common import Size
 
@@ -45,11 +48,26 @@ words_to_remove_from_titles = {
 }
 
 
-def keyword_match(keywords, string):
+@dataclass
+class ParsedListingData:
+    brand: Optional[str]
+    model: Optional[str]
+    price: Optional[int]
+    year: Optional[str]
+    number_size_min: Optional[float]
+    number_size_max: Optional[float]
+    letter_size_min: Optional[Size]
+    letter_size_max: Optional[Size]
+    region: Optional[str]
+    city: Optional[str]
+    description: Optional[str]
+
+
+def _keyword_match(keywords: list[str], string: str) -> bool:
     return any(kw in string.lower() for kw in keywords)
 
 
-def parse_raw_description(soup):
+def parse_raw_description(soup: BeautifulSoup) -> ParsedListingData:
     ps = [p.text for p in soup.find("article").find_all("p")]
 
     model = None
@@ -80,25 +98,25 @@ def parse_raw_description(soup):
         except IndexError:
             raise IndexError(f"IndexError: {splitted}, p: {p}")
 
-        if keyword_match(keywords["size"], key):
-            letter_size, numerical_size = parse_size(val)
+        if _keyword_match(keywords["size"], key):
+            letter_size, numerical_size = _parse_size(val)
 
-        elif keyword_match(keywords["model"], key):
+        elif _keyword_match(keywords["model"], key):
             model = val
-        elif keyword_match(keywords["brand"], key):
+        elif _keyword_match(keywords["brand"], key):
             brand = val
-        elif keyword_match(keywords["city"], key):
+        elif _keyword_match(keywords["city"], key):
             city = val.split()[0] if val else None
-        elif keyword_match(keywords["year"], key):
+        elif _keyword_match(keywords["year"], key):
             year = val
-        elif keyword_match(keywords["price"], key):
-            price = parse_price(val)
-        elif keyword_match(keywords["description"], key):
+        elif _keyword_match(keywords["price"], key):
+            price = _parse_price(val)
+        elif _keyword_match(keywords["description"], key):
             description = val
-        elif keyword_match(keywords["region"], key):
+        elif _keyword_match(keywords["region"], key):
             region = val.split()[0] if val else None
 
-    return (
+    return ParsedListingData(
         brand,
         model,
         price,
@@ -115,18 +133,18 @@ def parse_raw_description(soup):
 
 def parse_raw_title(soup, category: str) -> str:
     post_title = soup.find("h1").find_all("span")[-1].text.rsplit(",", maxsplit=2)
-    title = remove_words(post_title[0], words_to_remove_from_titles.get(category, []))
+    title = _remove_words(post_title[0], words_to_remove_from_titles.get(category, []))
     return title
 
 
-def remove_words(string: str, remove_words: List[str]) -> str:
+def _remove_words(string: str, remove_words: List[str]) -> str:
     words_to_remove = remove_words + [word.capitalize() for word in remove_words]
     for word in words_to_remove:
         string = string.replace(f" {word}", "")
     return string
 
 
-def parse_price(price_str):
+def _parse_price(price_str: str) -> Optional[int]:
     """
     Parses a price string and returns the integer value.
     - Removes non-numeric characters except commas and periods.
@@ -155,11 +173,11 @@ def parse_price(price_str):
         return None
 
 
-def parse_date_posted(soup):
+def parse_date_posted(soup: BeautifulSoup) -> str:
     return soup.find("time")["datetime"]
 
 
-def parse_raw_images(soup):
+def parse_raw_images(soup: BeautifulSoup) -> List[str]:
     image_links = soup.find("article").find_all(
         "a", href=re.compile(r"cdn2\.fillaritori\.com")
     )
@@ -168,7 +186,7 @@ def parse_raw_images(soup):
     return image_links
 
 
-def parse_size(
+def _parse_size(
     size_str: str,
 ) -> Tuple[
     Tuple[Optional[Size], Optional[Size]], Tuple[Optional[float], Optional[float]]
