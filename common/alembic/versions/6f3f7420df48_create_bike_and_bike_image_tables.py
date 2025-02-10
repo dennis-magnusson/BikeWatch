@@ -36,7 +36,6 @@ def upgrade() -> None:
         sa.Column("city", sa.String),
         sa.Column("region", sa.String),
         sa.Column("description", sa.String),
-        sa.Column("short_description", sa.String),
         sa.Column("category", sa.String),
         sa.Column("date_first_seen", sa.DateTime, server_default=sa.func.now()),
         sa.Column("date_last_updated", sa.DateTime, server_default=sa.func.now()),

@@ -24,7 +24,6 @@ interface Listing {
     letter_size_min: string | null;
     letter_size_max: string | null;
     description: string;
-    short_description: string | null;
     date_posted: string;
     date_last_updated: string;
     date_first_seen: string;

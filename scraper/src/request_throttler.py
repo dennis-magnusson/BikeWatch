@@ -35,7 +35,7 @@ def rate_limited_request(rate_limit_seconds):
     return decorator
 
 
-@rate_limited_request(rate_limit_seconds=5)
+@rate_limited_request(rate_limit_seconds=1)
 def get_request(url, **kwargs):
     """Perform a GET request with rate limiting."""
     return requests.get(url, **kwargs)

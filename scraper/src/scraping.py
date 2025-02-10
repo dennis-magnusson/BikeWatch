@@ -103,7 +103,6 @@ def scrape_listing(
         region,
         city,
         description,
-        short_description,
     ) = parse_raw_description(soup)
     images = parse_raw_images(soup)
 
@@ -123,7 +122,6 @@ def scrape_listing(
         city=city,
         region=region,
         description=description,
-        short_description=short_description,
         category=category_name,
         images=images,
     )

@@ -11,7 +11,6 @@ keywords = {
     "region": ["maakunta", "province"],
     "city": ["paikkakunta", "kaupunki", "city"],
     "price": ["hinta", "price"],
-    "short_description": ["lyhyt kuvaus"],
     "description": ["kuvaus"],
 }
 
@@ -59,7 +58,6 @@ def parse_raw_description(soup):
     region = None
     year = None
     price = None
-    short_description = None
     description = None
     letter_size = (None, None)
     numerical_size = (None, None)
@@ -97,8 +95,6 @@ def parse_raw_description(soup):
             price = parse_price(val)
         elif keyword_match(keywords["description"], key):
             description = val
-        elif keyword_match(keywords["short_description"], key):
-            short_description = val
         elif keyword_match(keywords["region"], key):
             region = val.split()[0] if val else None
 
@@ -114,7 +110,6 @@ def parse_raw_description(soup):
         region,
         city,
         description,
-        short_description,
     )
 
 

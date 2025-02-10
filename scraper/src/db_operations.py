@@ -31,7 +31,6 @@ def add_listing(session, listing: BikeListingBase):
         city=listing.city,
         region=listing.region,
         description=listing.description,
-        short_description=listing.short_description,
         category=listing.category,
     )
 

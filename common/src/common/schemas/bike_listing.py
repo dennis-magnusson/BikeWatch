@@ -28,7 +28,6 @@ class BikeListingBase(BaseModel):
     city: Optional[str] = None
     region: Optional[str] = None
     description: Optional[str] = None
-    short_description: Optional[str] = None
     images: List[str] = []
     category: Optional[str] = None
 
