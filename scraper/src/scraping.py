@@ -1,5 +1,6 @@
 import logging
 import re
+from dataclasses import asdict
 from typing import List, Optional
 
 from alerting import (
@@ -9,6 +10,7 @@ from alerting import (
 )
 from bs4 import BeautifulSoup
 from parsing import (
+    ParsedListingData,
     parse_date_posted,
     parse_raw_description,
     parse_raw_images,
@@ -91,44 +93,21 @@ def scrape_listing(
     if most_likely_sold or too_old:
         return None
 
-    (
-        brand,
-        model,
-        price,
-        year,
-        number_size_min,
-        number_size_max,
-        letter_size_min,
-        letter_size_max,
-        region,
-        city,
-        description,
-    ) = parse_raw_description(soup)
+    parsed_data: ParsedListingData = parse_raw_description(soup)
     images = parse_raw_images(soup)
 
     listing = BikeListingBase(
         id=id,
         title=title,
-        brand=brand,
-        model=model,
-        year=year,
         url=url,
         date_posted=date_posted,
-        number_size_min=number_size_min,
-        number_size_max=number_size_max,
-        letter_size_min=letter_size_min,
-        letter_size_max=letter_size_max,
-        price=price,
-        city=city,
-        region=region,
-        description=description,
         category=category_name,
         images=images,
+        **asdict(parsed_data),
     )
 
     # Check alerts and send notifications
     alerts = session.query(UserAlert).all()
-    logging.debug(alerts)
     for alert in alerts:
         if matches_alert(listing, alert) and not has_been_alerted(
             session, alert.id, listing.id
