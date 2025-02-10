@@ -1,4 +1,4 @@
-from common.models import Size
+from common.schemas.bike_listing import Size
 from scraper.src.parsing import _parse_price, _parse_size, _remove_words
 
 WORDS_TO_REMOVE_ROADBIKE_CATEGORY = [
