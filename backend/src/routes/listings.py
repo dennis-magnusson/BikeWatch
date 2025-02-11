@@ -64,6 +64,8 @@ def get_listings(
                 & (BikeListing.number_size_max >= size)
             )
 
+        # TODO: Use a conversion to letter_size from number_size to show listings without number_size
+
     # Apply sorting
     if sort_by == "price_inc":
         query = query.order_by(BikeListing.price.asc())
