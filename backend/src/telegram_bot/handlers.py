@@ -4,13 +4,16 @@ from telegram import (
     Update,
 )
 from telegram.ext import (
-    CallbackQueryHandler,
     CommandHandler,
     ContextTypes,
     ConversationHandler,
     MessageHandler,
     filters,
 )
+
+from common.models.alert import UserAlert
+
+from ..database import get_db
 
 BIKE_CATEGORY, BIKE_MAXPRICE, BIKE_MINPRICE, BIKE_SIZE = range(4)
 
@@ -91,7 +94,18 @@ async def bike_size(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
                 f"Size: {context.user_data['bike_size']} cm"
             )
 
-            # TODO: register a new alert to the db: update.effective_user.id, bike_category, bike_maxprice, bike_size
+            alert = UserAlert(
+                chat_id=update.effective_user.id,
+                category=context.user_data["bike_category"],
+                min_price=context.user_data["bike_minprice"],
+                max_price=context.user_data["bike_maxprice"],
+                size=context.user_data["bike_size"],
+            )
+
+            db_session = next(get_db())
+            db_session.add(alert)
+            db_session.commit()
+
         else:
             await update.message.reply_text(
                 "Invalid size. Please enter a positive number."
