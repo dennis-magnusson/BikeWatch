@@ -1,0 +1,20 @@
+FROM python:3.12-slim
+
+# Install uv.
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+
+# Copy the application and common library into the container.
+COPY ./backend/ /app
+COPY ./common/ /app/common
+
+# Copy the uv lockfile into the container.
+COPY pyproject.toml /app/pyproject.toml
+COPY ./uv.lock /app/uv.lock
+
+# Install the application dependencies.
+WORKDIR /app
+RUN uv sync --frozen --no-cache
+
+# Run the application.
+# CMD ["uv", "run", "fastapi", "run", "src/main.py", "--port", "8000", "--host", "0.0.0.0"]
+CMD ["uv", "run", "-m", "src.telegram_bot.telegram_bot"]
