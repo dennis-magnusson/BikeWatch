@@ -17,3 +17,12 @@ services:
             - "8000:8000"
         volumes:
             - ../data:/app/data
+
+    bot:
+        build:
+            context: ..
+            dockerfile: docker/Dockerfile.bot
+        env_file:
+            - ../.env
+        volumes:
+            - ../data:/app/data
