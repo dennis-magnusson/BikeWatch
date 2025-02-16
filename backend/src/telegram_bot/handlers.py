@@ -116,6 +116,41 @@ async def bike_size(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     return ConversationHandler.END
 
 
+async def list_alerts(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    chat_id = str(update.effective_user.id)
+    db_session = next(get_db())
+    alerts = db_session.query(UserAlert).filter(UserAlert.chat_id == chat_id).all()
+
+    if not alerts:
+        await update.message.reply_text("You have no alerts set up.")
+        return
+
+    response = "Your alerts:\n"
+    for alert in alerts:
+        details = []
+        if alert.category:
+            details.append(f"Category: {alert.category}")
+        if alert.min_price:
+            details.append(f"Min price: {alert.min_price}€")
+        if alert.max_price:
+            details.append(f"Max price: {alert.max_price}€")
+        if alert.size:
+            flexibility = "±1" if alert.size_flexibility else "exact"
+            details.append(f"Size: {alert.size} ({flexibility})")
+        if alert.city:
+            details.append(f"City: {alert.city}")
+        if alert.region:
+            details.append(f"Region: {alert.region}")
+
+        response += (
+            f"Alert #{alert.id}:\n"
+            + "\n".join(f"• {detail}" for detail in details)
+            + "\n\n"
+        )
+
+    await update.message.reply_text(response)
+
+
 async def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     context.user_data.clear()
     await update.message.reply_text("Bye!", reply_markup=ReplyKeyboardRemove())
@@ -123,7 +158,12 @@ async def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
 
 
 conversation_handler = ConversationHandler(
-    entry_points=[CommandHandler("start", start)],
+    entry_points=[
+        CommandHandler("start", start),
+        CommandHandler("alerts", list_alerts),
+        # TODO: CommandHandler("remove", remove_alert),
+        # TODO: CommandHandler("help", help)
+    ],
     states={
         BIKE_CATEGORY: [MessageHandler(filters.TEXT & ~filters.COMMAND, bike_category)],
         BIKE_MAXPRICE: [MessageHandler(filters.TEXT & ~filters.COMMAND, bike_maxprice)],
