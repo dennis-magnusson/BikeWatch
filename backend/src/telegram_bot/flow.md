@@ -11,11 +11,15 @@ Yes ->
 -   Show the filter parameters and ask for confirmation (register or cancel)
     -> save filter to db
 
-# /filters
+# /alerts
 
 -   list the filters that the user has registered (include ids)
 
-# /delete <filter_id>
+# /remove <alert_id>
 
 -   show the filter parameters and when it was created, ask if they want to remove that filter
     -> delte filter from db
+
+# /help
+
+-   list all possible commands and what they do
