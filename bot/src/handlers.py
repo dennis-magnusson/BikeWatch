@@ -143,7 +143,7 @@ async def list_alerts(update: Update, context: ContextTypes.DEFAULT_TYPE):
         if alert.category:
             details.append(f"🚴 {alert.category.capitalize()}")
         if alert.min_price or alert.max_price:
-            details.append(f"💰: {alert.min_price}€")
+            details.append(f"💶 {alert.min_price}-{alert.max_price}€")
         if alert.size:
             flexibility = "±1" if alert.size_flexibility else "exact"
             details.append(f"📏 {alert.size} ({flexibility})")
