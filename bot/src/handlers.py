@@ -1,28 +1,37 @@
-from telegram.ext import CommandHandler, ConversationHandler, MessageHandler, filters, ContextTypes
-from telegram import Update
-from conversation_handlers import (
-    start,
-    bike_category,
-    bike_maxprice,
-    bike_minprice,
-    bike_size,
-    cancel,
-)
 from alert_handlers import (
-    list_alerts,
-    select_remove_alert,
     confirm_remove_alert,
+    list_alerts,
     remove_alert,
+    select_remove_alert,
 )
-
-(
+from constants import (
     BIKE_CATEGORY,
     BIKE_MAXPRICE,
     BIKE_MINPRICE,
+    BIKE_REGION,
     BIKE_SIZE,
-    REMOVE_ALERT,
     CONFIRM_REMOVE_ALERT,
-) = range(6)
+    REMOVE_ALERT,
+    SELECT_REMOVE_ALERT,
+)
+from conversation_handlers import (
+    bike_category,
+    bike_maxprice,
+    bike_minprice,
+    bike_region,
+    bike_size,
+    cancel,
+    start,
+)
+from telegram import Update
+from telegram.ext import (
+    CommandHandler,
+    ContextTypes,
+    ConversationHandler,
+    MessageHandler,
+    filters,
+)
+
 
 async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     help_text = (
@@ -34,6 +43,7 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         "/help - Show this help message."
     )
     await update.message.reply_text(help_text, parse_mode="HTML")
+
 
 conversation_handler = ConversationHandler(
     entry_points=[
@@ -47,8 +57,14 @@ conversation_handler = ConversationHandler(
         BIKE_MAXPRICE: [MessageHandler(filters.TEXT & ~filters.COMMAND, bike_maxprice)],
         BIKE_MINPRICE: [MessageHandler(filters.TEXT & ~filters.COMMAND, bike_minprice)],
         BIKE_SIZE: [MessageHandler(filters.TEXT & ~filters.COMMAND, bike_size)],
+        BIKE_REGION: [MessageHandler(filters.TEXT & ~filters.COMMAND, bike_region)],
+        SELECT_REMOVE_ALERT: [
+            MessageHandler(filters.TEXT & ~filters.COMMAND, select_remove_alert)
+        ],
+        CONFIRM_REMOVE_ALERT: [
+            MessageHandler(filters.TEXT & ~filters.COMMAND, confirm_remove_alert)
+        ],
         REMOVE_ALERT: [MessageHandler(filters.TEXT & ~filters.COMMAND, remove_alert)],
-        CONFIRM_REMOVE_ALERT: [MessageHandler(filters.TEXT & ~filters.COMMAND, confirm_remove_alert)],
     },
     fallbacks=[CommandHandler("cancel", cancel)],
 )

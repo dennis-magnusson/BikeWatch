@@ -1,16 +1,13 @@
+from constants import (
+    CONFIRM_REMOVE_ALERT,
+    REMOVE_ALERT,
+)
 from telegram import ReplyKeyboardMarkup, Update
 from telegram.ext import ContextTypes, ConversationHandler
+
 from common.database import get_db
 from common.models.alert import UserAlert
 
-(
-    BIKE_CATEGORY,
-    BIKE_MAXPRICE,
-    BIKE_MINPRICE,
-    BIKE_SIZE,
-    REMOVE_ALERT,
-    CONFIRM_REMOVE_ALERT,
-) = range(6)
 
 async def list_alerts(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat_id = str(update.effective_user.id)
@@ -27,10 +24,10 @@ async def list_alerts(update: Update, context: ContextTypes.DEFAULT_TYPE):
         if alert.category:
             details.append(f"🚴 {alert.category.capitalize()}")
         if alert.min_price or alert.max_price:
-            details.append(f"💶 {alert.min_price}-{alert.max_price}€")
+            details.append(f"💶 {alert.min_price}-{alert.max_price} €")
         if alert.size:
-            flexibility = "±1" if alert.size_flexibility else "exact"
-            details.append(f"📏 {alert.size} cm ({flexibility})")
+            flexibility = "±1 " if alert.size_flexibility else ""
+            details.append(f"📏 {alert.size} {flexibility}cm")
         if alert.city:
             details.append(f"🏙️ {alert.city}")
         if alert.region:
@@ -43,6 +40,7 @@ async def list_alerts(update: Update, context: ContextTypes.DEFAULT_TYPE):
         )
 
     await update.message.reply_text(response, parse_mode="HTML")
+
 
 async def select_remove_alert(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat_id = str(update.effective_user.id)
@@ -63,6 +61,7 @@ async def select_remove_alert(update: Update, context: ContextTypes.DEFAULT_TYPE
 
     return CONFIRM_REMOVE_ALERT
 
+
 async def confirm_remove_alert(update: Update, context: ContextTypes.DEFAULT_TYPE):
     alert_id = int(update.message.text)
     chat_id = str(update.effective_user.id)
@@ -74,7 +73,9 @@ async def confirm_remove_alert(update: Update, context: ContextTypes.DEFAULT_TYP
         return
 
     if alert.chat_id != chat_id:
-        await update.message.reply_text("❌ You do not have permission to remove this alert.")
+        await update.message.reply_text(
+            "❌ You do not have permission to remove this alert."
+        )
         return
 
     context.user_data["alert_id"] = alert_id
@@ -85,6 +86,7 @@ async def confirm_remove_alert(update: Update, context: ContextTypes.DEFAULT_TYP
     )
 
     return REMOVE_ALERT
+
 
 async def remove_alert(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if update.message.text == "Yes":
