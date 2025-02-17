@@ -5,8 +5,8 @@ RUN apk add --no-cache gcc musl-dev
 RUN python -m venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
 
-COPY ./scraper/pyproject.toml /app/pyproject.toml
-COPY ./common/ /common/
+COPY scraper/pyproject.toml /app/pyproject.toml
+COPY common/ /common/
 
 WORKDIR /app
 RUN pip install --no-cache-dir -e . && \
@@ -15,11 +15,18 @@ RUN pip install --no-cache-dir -e . && \
   find /opt/venv -type d -name "__pycache__" -exec rm -r {} + && \
   find /opt/venv -type f -name "*.pyc" -delete
 
+
 FROM python:3.12-alpine
 
 COPY --from=builder /opt/venv /opt/venv
-COPY ./scraper/src/ /app/src/
-COPY ./common/ /common/
+COPY scraper/src/ /app/src/
+COPY common/ /common/
+COPY docker/entrypoint-scraper.sh /app/docker/
+
+COPY scraper/alembic /app/alembic/
+COPY scraper/alembic.ini /app/
+
+RUN chmod +x /app/docker/entrypoint-scraper.sh
 
 ENV PATH="/opt/venv/bin:$PATH" \
   PYTHONDONTWRITEBYTECODE=1 \
