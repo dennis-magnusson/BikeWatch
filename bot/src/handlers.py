@@ -11,9 +11,8 @@ from telegram.ext import (
     filters,
 )
 
+from common.database import get_db
 from common.models.alert import UserAlert
-
-from ..database import get_db
 
 (
     BIKE_CATEGORY,
