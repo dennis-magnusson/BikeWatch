@@ -1,5 +1,6 @@
 import re
 from dataclasses import dataclass
+from datetime import datetime, timedelta, timezone
 from typing import List, Optional, Tuple
 
 from bs4 import BeautifulSoup
@@ -173,8 +174,14 @@ def _parse_price(price_str: str) -> Optional[int]:
         return None
 
 
-def parse_date_posted(soup: BeautifulSoup) -> str:
-    return soup.find("time")["datetime"]
+def parse_date_posted(soup: BeautifulSoup, max_age_months=15) -> Tuple[str, bool]:
+    date_posted = soup.find("time")["datetime"]  # expected format: YYYY-MM-DDTHH:MM:SSZ
+    # TODO: Make sure that date format is correct
+    post_date = datetime.fromisoformat(date_posted.replace("Z", "+00:00"))
+    current_date = datetime.now(timezone.utc)
+    max_age = timedelta(days=30.44 * max_age_months)
+    too_old = (current_date - post_date) > max_age
+    return date_posted, too_old
 
 
 def parse_raw_images(soup: BeautifulSoup) -> List[str]:

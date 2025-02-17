@@ -1,6 +1,7 @@
 import logging
 import re
 from dataclasses import asdict
+from datetime import timedelta
 from typing import List, Optional
 
 from alerting import (
@@ -86,11 +87,12 @@ def scrape_listing(
 
     id = get_listing_id(url)
     title = parse_raw_title(soup, category_name)
-    date_posted = parse_date_posted(soup)
+    date_posted, too_old = parse_date_posted(soup, max_age_months=15)
 
     most_likely_sold = any(keyword in title.lower() for keyword in sold_keywords)
-    too_old = False  # TODO: Implement this
+    # check that listing was not posted more than 15 months ago
     if most_likely_sold or too_old:
+        logging.info(f"Sold or too old: {url=}, {most_likely_sold=}, {too_old=}")
         return None
 
     parsed_data: ParsedListingData = parse_raw_description(soup)
