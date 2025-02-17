@@ -1,20 +1,35 @@
-FROM python:3.12-slim
+FROM python:3.12-alpine AS builder
 
-# Install uv.
-COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+# Install build dependencies
+RUN apk add --no-cache gcc musl-dev
 
-# Copy the application and common library into the container.
-COPY ./backend/ /app
-COPY ./common/ /app/common
+# Create and activate virtual environment
+RUN python -m venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
 
-# Copy the uv lockfile into the container.
-COPY pyproject.toml /app/pyproject.toml
-COPY ./uv.lock /app/uv.lock
+# Copy only requirements first to leverage Docker cache
+COPY ./bot/pyproject.toml /app/pyproject.toml
+COPY ./common/ /common/
 
-# Install the application dependencies.
 WORKDIR /app
-RUN uv sync --frozen --no-cache
+RUN pip install --no-cache-dir -e . && \
+  pip install --no-cache-dir -e ../common && \
+  # Remove pip cache and unnecessary files
+  find /opt/venv -type d -name "__pycache__" -exec rm -r {} + && \
+  find /opt/venv -type f -name "*.pyc" -delete
 
-# Run the application.
-# CMD ["uv", "run", "fastapi", "run", "src/main.py", "--port", "8000", "--host", "0.0.0.0"]
-CMD ["uv", "run", "-m", "src.telegram_bot.telegram_bot"]
+# Final stage
+FROM python:3.12-alpine
+
+# Copy only the necessary files from builder
+COPY --from=builder /opt/venv /opt/venv
+COPY ./bot/src/ /app/src/
+COPY ./common/ /common/
+
+# Make sure we use the virtualenv and set Python to not write bytecode
+ENV PATH="/opt/venv/bin:$PATH" \
+  PYTHONDONTWRITEBYTECODE=1 \
+  PYTHONUNBUFFERED=1
+
+WORKDIR /app
+CMD ["python", "src/main.py"]

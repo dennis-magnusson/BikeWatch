@@ -1,10 +1,11 @@
 import re
 from dataclasses import dataclass
+from datetime import datetime, timedelta, timezone
 from typing import List, Optional, Tuple
 
 from bs4 import BeautifulSoup
 
-from common import Size
+from common.schemas import Size
 
 keywords = {
     "size": ["koko", "rungon koko", "size", "frame size"],
@@ -173,8 +174,14 @@ def _parse_price(price_str: str) -> Optional[int]:
         return None
 
 
-def parse_date_posted(soup: BeautifulSoup) -> str:
-    return soup.find("time")["datetime"]
+def parse_date_posted(soup: BeautifulSoup, max_age_months=15) -> Tuple[str, bool]:
+    date_posted = soup.find("time")["datetime"]  # expected format: YYYY-MM-DDTHH:MM:SSZ
+    # TODO: Make sure that date format is correct
+    post_date = datetime.fromisoformat(date_posted.replace("Z", "+00:00"))
+    current_date = datetime.now(timezone.utc)
+    max_age = timedelta(days=30.44 * max_age_months)
+    too_old = (current_date - post_date) > max_age
+    return date_posted, too_old
 
 
 def parse_raw_images(soup: BeautifulSoup) -> List[str]:
@@ -202,7 +209,7 @@ def _parse_size(
     size_str = size_str.replace("cm", "")
     size_str = size_str.replace(" ", "")
 
-    possible_letter_size_substrings = {e.value: e for e in Size}
+    size_mapping = {"XS": Size.XS, "S": Size.S, "M": Size.M, "L": Size.L, "XL": Size.XL}
 
     numerical_range_match = re.search(r"(\d+\.?\d*)[\s/-]+(\d+\.?\d*)", size_str)
     if not numerical_range_match:
@@ -229,13 +236,13 @@ def _parse_size(
 
     if letter_range_match:
         letter_result = (
-            possible_letter_size_substrings[letter_range_match.group(1).upper()],
-            possible_letter_size_substrings[letter_range_match.group(2).upper()],
+            size_mapping[letter_range_match.group(1).upper()].name,
+            size_mapping[letter_range_match.group(2).upper()].name,
         )
     elif single_letter_match:
         letter_result = (
-            possible_letter_size_substrings[single_letter_match.group(1).upper()],
-            possible_letter_size_substrings[single_letter_match.group(1).upper()],
+            size_mapping[single_letter_match.group(1).upper()].name,
+            size_mapping[single_letter_match.group(1).upper()].name,
         )
 
     return (letter_result, numerical_result)

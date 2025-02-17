@@ -4,10 +4,10 @@ import os
 import traceback
 from time import sleep
 
+from common.database.db import get_db
 from db_operations import add_listing
 from scraping import find_listings_for_category, scrape_listing
-from sqlalchemy import create_engine
-from sqlalchemy.orm import Session, sessionmaker
+from sqlalchemy.orm import Session
 from urls import Category, categories
 
 
@@ -78,18 +78,7 @@ def main():
     scraping_frequency_minutes = int(os.environ.get("SCRAPING_FREQUENCY_MINUTES", 60))
 
     logging.info("Opening sqlalchemy session to sqlite...")
-    engine = create_engine("sqlite:///data/bikes.db")
-    Session = sessionmaker(bind=engine)
-    session = Session()
-
-    logging.info("Database connected")
-
-    # TODO: Implement a better way to handle database schema changes
-
-    # Base.metadata.drop_all(engine)
-    # logging.info("Database schema dropped")
-    # Base.metadata.create_all(engine)
-    # logging.info("Database schema created")
+    session = next(get_db())
 
     scraper = Scraper(session, scraping_frequency_minutes, args.single_page)
     scraper.run()

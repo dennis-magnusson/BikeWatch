@@ -2,10 +2,9 @@ import logging
 import os
 
 from dotenv import load_dotenv
+from handlers import conversation_handler
 from telegram import Update
 from telegram.ext import ApplicationBuilder
-
-from .handlers import conversation_handler
 
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO

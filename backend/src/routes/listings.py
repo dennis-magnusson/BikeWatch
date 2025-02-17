@@ -5,8 +5,7 @@ from sqlalchemy import func, or_
 from sqlalchemy.orm import joinedload
 
 from common import BikeListing
-
-from ..database import get_db
+from common.database import get_db
 
 router = APIRouter()
 
