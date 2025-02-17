@@ -6,6 +6,7 @@ services:
         environment:
             SCRAPING_FREQUENCY_MINUTES: 1
             SCRAPING_PAGE_LIMIT: 1
+            GETREQ_RATE_LIMIT_SECONDS: 2
         volumes:
             - ../data:/app/data
 
