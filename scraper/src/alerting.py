@@ -52,6 +52,7 @@ def send_new_listing_notification_telegram(chat_id: str, listing: BikeListingBas
 
 
 def matches_alert(listing: BikeListingBase, alert: UserAlert) -> bool:
+    # TODO: Handle missing values in listing
     if alert.min_price and listing.price < alert.min_price:
         return False
     if alert.max_price and listing.price > alert.max_price:
