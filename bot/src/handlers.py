@@ -146,7 +146,7 @@ async def list_alerts(update: Update, context: ContextTypes.DEFAULT_TYPE):
             details.append(f"💶 {alert.min_price}-{alert.max_price}€")
         if alert.size:
             flexibility = "±1" if alert.size_flexibility else "exact"
-            details.append(f"📏 {alert.size} ({flexibility})")
+            details.append(f"📏 {alert.size} cm ({flexibility})")
         if alert.city:
             details.append(f"🏙️ {alert.city}")
         if alert.region:
