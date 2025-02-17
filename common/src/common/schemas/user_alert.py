@@ -5,8 +5,8 @@ from pydantic import BaseModel
 
 class UserAlertCreate(BaseModel):
     chat_id: Optional[str] = None
-    min_price: Optional[float] = None
-    max_price: Optional[float] = None
+    min_price: Optional[int] = None
+    max_price: Optional[int] = None
     category: Optional[str] = None
     city: Optional[str] = None
     region: Optional[str] = None
