@@ -45,9 +45,10 @@ async def bike_category(update: Update, context: ContextTypes.DEFAULT_TYPE) -> i
     category_chosen = (
         update.message.text.encode("ascii", "ignore").decode("ascii").strip().lower()
     )
+
     context.user_data["bike_category"] = category_chosen
     await update.message.reply_text(
-        "💶 What maximum price (euros)?",
+        "💶 What maximum price (€)?",
     )
 
     return BIKE_MAXPRICE
@@ -59,7 +60,7 @@ async def bike_maxprice(update: Update, context: ContextTypes.DEFAULT_TYPE) -> i
         if max_price > 0:
             context.user_data["bike_maxprice"] = max_price
             await update.message.reply_text(
-                "💶 What minimum price (euros)?",
+                "💶 What minimum price (€)?",
             )
             return BIKE_MINPRICE
         else:
@@ -75,12 +76,11 @@ async def bike_maxprice(update: Update, context: ContextTypes.DEFAULT_TYPE) -> i
 
 async def bike_minprice(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     try:
-        # TODO: Handle "inf"
         min_price = int(update.message.text)
-        if min_price >= 0 and min_price < context.user_data["bike_maxprice"]:
+        if min_price >= 0 and min_price < context.user_data["bike_maxprice"] and min_price != "inf":
             context.user_data["bike_minprice"] = min_price
             await update.message.reply_text(
-                "📏 What size? \n\nPlease provide the tube length in centimeters.",
+                "📏 What size? \n\nPlease provide the tube length in centimeters or 'any' if you don't want to filter by size.",
             )
             return BIKE_SIZE
         else:
@@ -95,37 +95,46 @@ async def bike_minprice(update: Update, context: ContextTypes.DEFAULT_TYPE) -> i
 
 
 async def bike_size(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    text = update.message.text.lower()
     try:
-        size = float(update.message.text)
-        if size > 0:
-            context.user_data["bike_size"] = update.message.text
-            await update.message.reply_text(
-                "🎉 Great! I will send you bikes that match these criteria.\n\n"
-                f"🚴 {context.user_data['bike_category'].capitalize()}\n"
-                f"💶 {context.user_data['bike_minprice']}-{context.user_data['bike_maxprice']} €\n"
-                f"📏 {context.user_data['bike_size']} cm"
-            )
-
-            alert = UserAlert(
-                chat_id=update.effective_user.id,
-                category=context.user_data["bike_category"],
-                min_price=context.user_data["bike_minprice"],
-                max_price=context.user_data["bike_maxprice"],
-                size=context.user_data["bike_size"],
-            )
-
-            db_session = next(get_db())
-            db_session.add(alert)
-            db_session.commit()
-
+        # Check for 'any' first to avoid ValueError on float conversion
+        if text == "any":
+            size = None
+            gave_number = False
         else:
-            await update.message.reply_text(
-                "❌ Invalid size. Please enter a positive number."
-            )
-    except ValueError:
-        await update.message.reply_text("❌ Invalid size. Please enter a valid number.")
+            size = float(text)
+            if size <= 0:
+                await update.message.reply_text(
+                    "❌ Invalid size. Please enter a positive number."
+                )
+                return BIKE_SIZE
+            gave_number = True
 
-    return ConversationHandler.END
+        context.user_data["bike_size"] = text
+        await update.message.reply_text(
+            "✅ I will send you bikes that match these criteria.\n\n"
+            f"🚴 {context.user_data['bike_category'].capitalize()}\n"
+            f"💶 {context.user_data['bike_minprice']}-{context.user_data['bike_maxprice']} €\n"
+            f"📏 {(context.user_data['bike_size'].capitalize() if not gave_number else context.user['bike_size'])} {('cm' if gave_number else '')}"
+        )
+
+        alert = UserAlert(
+            chat_id=update.effective_user.id,
+            category=context.user_data["bike_category"] if context.user_data["bike_category"] != "any" else None,
+            min_price=context.user_data["bike_minprice"],
+            max_price=context.user_data["bike_maxprice"],
+            size=size,
+        )
+
+        db_session = next(get_db())
+        db_session.add(alert)
+        db_session.commit()
+
+        return ConversationHandler.END
+
+    except ValueError:
+        await update.message.reply_text("❌ Invalid size. Please enter a valid number or 'any'.")
+        return BIKE_SIZE
 
 
 async def list_alerts(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -197,17 +206,19 @@ async def confirm_remove_alert(update: Update, context: ContextTypes.DEFAULT_TYP
         )
         return
 
+    context.user_data["alert_id"] = alert_id  # Store alert_id in user_data
+
     await update.message.reply_text(
         f"⚠️ Are you sure you want to remove alert #{alert_id}?",
         reply_markup=ReplyKeyboardMarkup([["Yes", "No"]], one_time_keyboard=True),
     )
 
-    return CONFIRM_REMOVE_ALERT
+    return REMOVE_ALERT  # Correct state transition
 
 
 async def remove_alert(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if update.message.text == "Yes":
-        alert_id = int(context.user_data["alert_id"])
+        alert_id = context.user_data["alert_id"]  # Retrieve alert_id from user_data
         db_session = next(get_db())
         db_session.query(UserAlert).filter(UserAlert.id == alert_id).delete()
         db_session.commit()
@@ -236,8 +247,8 @@ conversation_handler = ConversationHandler(
         BIKE_MAXPRICE: [MessageHandler(filters.TEXT & ~filters.COMMAND, bike_maxprice)],
         BIKE_MINPRICE: [MessageHandler(filters.TEXT & ~filters.COMMAND, bike_minprice)],
         BIKE_SIZE: [MessageHandler(filters.TEXT & ~filters.COMMAND, bike_size)],
-        REMOVE_ALERT: [MessageHandler(filters.COMMAND, remove_alert)],
-        CONFIRM_REMOVE_ALERT: [MessageHandler(filters.COMMAND, remove_alert)],
+        REMOVE_ALERT: [MessageHandler(filters.TEXT & ~filters.COMMAND, remove_alert)],  # Correct filter
+        CONFIRM_REMOVE_ALERT: [MessageHandler(filters.TEXT & ~filters.COMMAND, confirm_remove_alert)],  # Correct filter
     },
     fallbacks=[CommandHandler("cancel", cancel)],
 )
