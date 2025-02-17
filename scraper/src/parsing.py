@@ -4,7 +4,7 @@ from typing import List, Optional, Tuple
 
 from bs4 import BeautifulSoup
 
-from common import Size
+from common.schemas import Size
 
 keywords = {
     "size": ["koko", "rungon koko", "size", "frame size"],
