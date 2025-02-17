@@ -206,19 +206,19 @@ async def confirm_remove_alert(update: Update, context: ContextTypes.DEFAULT_TYP
         )
         return
 
-    context.user_data["alert_id"] = alert_id  # Store alert_id in user_data
+    context.user_data["alert_id"] = alert_id
 
     await update.message.reply_text(
         f"⚠️ Are you sure you want to remove alert #{alert_id}?",
         reply_markup=ReplyKeyboardMarkup([["Yes", "No"]], one_time_keyboard=True),
     )
 
-    return REMOVE_ALERT  # Correct state transition
+    return REMOVE_ALERT
 
 
 async def remove_alert(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if update.message.text == "Yes":
-        alert_id = context.user_data["alert_id"]  # Retrieve alert_id from user_data
+        alert_id = context.user_data["alert_id"]
         db_session = next(get_db())
         db_session.query(UserAlert).filter(UserAlert.id == alert_id).delete()
         db_session.commit()
@@ -235,12 +235,24 @@ async def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     return ConversationHandler.END
 
 
+async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    help_text = (
+        "ℹ️ <b>BikeWatch Bot Help</b>\n\n"
+        "/start - Set up notifications for bike listings.\n"
+        "/alerts - List your current alerts.\n"
+        "/remove - Remove an existing alert.\n"
+        "/cancel - Cancel the current operation.\n"
+        "/help - Show this help message."
+    )
+    await update.message.reply_text(help_text, parse_mode="HTML")
+
+
 conversation_handler = ConversationHandler(
     entry_points=[
         CommandHandler("start", start),
         CommandHandler("alerts", list_alerts),
         CommandHandler("remove", select_remove_alert),
-        # TODO: CommandHandler("help", help)
+        CommandHandler("help", help_command),
     ],
     states={
         BIKE_CATEGORY: [MessageHandler(filters.TEXT & ~filters.COMMAND, bike_category)],
