@@ -1,9 +1,11 @@
 x-common-env: &common-env
     SQLALCHEMY_DATABASE_URL: "sqlite:////app/data/database.db"
 
-x-database-volume: &database-volume
+x-shared-fields: &shared-fields
     volumes:
         - ../data:/app/data # - /var/lib/bikewatch:/app/data # for production
+    env_file:
+        - ../.env
 
 services:
     scraper:
@@ -15,8 +17,7 @@ services:
             SCRAPING_FREQUENCY_MINUTES: 1
             SCRAPING_PAGE_LIMIT: 1
             GETREQ_RATE_LIMIT_SECONDS: 2
-
-        <<: *database-volume
+        <<: *shared-fields
         entrypoint: ["/app/docker/entrypoint-scraper.sh"]
 
     # backend:
@@ -34,6 +35,4 @@ services:
             dockerfile: docker/Dockerfile.bot
         environment:
             <<: *common-env
-        env_file:
-            - ../.env
-        <<: *database-volume
+        <<: *shared-fields
