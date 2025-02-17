@@ -202,7 +202,7 @@ def _parse_size(
     size_str = size_str.replace("cm", "")
     size_str = size_str.replace(" ", "")
 
-    possible_letter_size_substrings = {e.value: e for e in Size}
+    size_mapping = {"XS": Size.XS, "S": Size.S, "M": Size.M, "L": Size.L, "XL": Size.XL}
 
     numerical_range_match = re.search(r"(\d+\.?\d*)[\s/-]+(\d+\.?\d*)", size_str)
     if not numerical_range_match:
@@ -229,13 +229,13 @@ def _parse_size(
 
     if letter_range_match:
         letter_result = (
-            possible_letter_size_substrings[letter_range_match.group(1).upper()],
-            possible_letter_size_substrings[letter_range_match.group(2).upper()],
+            size_mapping[letter_range_match.group(1).upper()].name,
+            size_mapping[letter_range_match.group(2).upper()].name,
         )
     elif single_letter_match:
         letter_result = (
-            possible_letter_size_substrings[single_letter_match.group(1).upper()],
-            possible_letter_size_substrings[single_letter_match.group(1).upper()],
+            size_mapping[single_letter_match.group(1).upper()].name,
+            size_mapping[single_letter_match.group(1).upper()].name,
         )
 
     return (letter_result, numerical_result)
