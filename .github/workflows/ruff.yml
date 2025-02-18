@@ -1,0 +1,23 @@
+name: Ruff linting
+
+on:
+    push:
+        branches:
+            - dev
+    pull_request:
+        branches:
+            - main
+
+jobs:
+    ruff_linting:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - uses: astral-sh/ruff-action@v3
+              with:
+                  src: >-
+                      backend/
+                      bot/
+                      scraper/
+                  args: --check .
+                  config: .ruff.toml
