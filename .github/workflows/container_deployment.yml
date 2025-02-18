@@ -1,0 +1,23 @@
+name: Build and push container images
+
+on:
+    push:
+        branches:
+            - main
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v4
+
+            - name: Login to GitHub Container Registry
+              run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+            - name: Build and push bot image
+              run: docker build -f docker/Dockerfile.bot -t ghcr.io/${{ github.actor }}/bikewatch-bot:latest . && docker push ghcr.io/${{ github.actor }}/bikewatch-bot:latest
+
+            - name: Build and push scraper image
+              run: docker build -f docker/Dockerfile.scraper -t ghcr.io/${{ github.actor }}/bikewatch-scraper:latest . && docker push ghcr.io/${{ github.actor }}/bikewatch-scraper:latest

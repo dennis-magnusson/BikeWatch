@@ -6,7 +6,9 @@ import os
 import requests
 
 
-def rate_limited_request(rate_limit_seconds=float(os.getenv("GETREQ_RATE_LIMIT_SECONDS", '1.0'))):
+def rate_limited_request(
+    rate_limit_seconds=float(os.getenv("GETREQ_RATE_LIMIT_SECONDS", "1.0")),
+):
     """
     A decorator to limit the rate of requests.
 

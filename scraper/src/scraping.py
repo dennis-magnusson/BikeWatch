@@ -1,7 +1,6 @@
 import logging
 import re
 from dataclasses import asdict
-from datetime import timedelta
 from typing import List, Optional
 
 from alerting import (
