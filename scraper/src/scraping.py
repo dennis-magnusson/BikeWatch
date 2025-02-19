@@ -107,7 +107,6 @@ def scrape_listing(
         **asdict(parsed_data),
     )
 
-    # Check alerts and send notifications
     alerts = session.query(UserAlert).all()
     for alert in alerts:
         if matches_alert(listing, alert) and not has_been_alerted(
