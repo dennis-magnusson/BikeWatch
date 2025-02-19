@@ -4,7 +4,7 @@ import os
 import requests
 from sqlalchemy.orm import Session
 
-from common.models.alert import UserAlert
+from common.models.alert import AlertedListing, UserAlert
 from common.schemas.bike_listing import BikeListingBase
 
 TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
@@ -70,13 +70,16 @@ def send_new_listing_notification_telegram(chat_id: str, listing: BikeListingBas
 
 
 def matches_alert(listing: BikeListingBase, alert: UserAlert) -> bool:
-    category_match = alert.category and listing.category == alert.category
-    size_match = alert.size and listing.matches_size(alert.size, alert.size_flexibility)
+    category_match = not alert.category or listing.category == alert.category
+    size_match = not alert.size or listing.matches_size(
+        alert.size, alert.size_flexibility
+    )
     price_match = (
-        alert.min_price
-        and alert.max_price
+        alert.min_price is not None
+        and alert.max_price is not None
         and listing.matches_price_range(alert.min_price, alert.max_price)
     )
+
     return category_match and size_match and price_match
 
 
