@@ -84,5 +84,24 @@ def matches_alert(listing: BikeListingBase, alert: UserAlert) -> bool:
 
 
 def has_been_alerted(session: Session, alert_id: int, listing_id: int) -> bool:
-    # TODO: Implement this
+    existing = (
+        session.query(AlertedListing)
+        .filter(
+            AlertedListing.alert_id == alert_id, AlertedListing.listing_id == listing_id
+        )
+        .first()
+    )
+
+    logging.info(
+        f"Checking if alert {alert_id} has been alerted for listing {listing_id}"
+    )
+    logging.info(f"Existing alert: {existing}")
+
+    if existing:
+        return True
+
+    new_alert = AlertedListing(alert_id=alert_id, listing_id=listing_id)
+    session.add(new_alert)
+    session.commit()
+
     return False
