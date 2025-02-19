@@ -10,24 +10,9 @@ from common.schemas.bike_listing import BikeListingBase
 TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 
 
-def _format_size_string(listing: BikeListingBase) -> str:
-    if listing.letter_size_max and listing.letter_size_min:
-        if listing.letter_size_max == listing.letter_size_min:
-            return listing.letter_size_max
-        else:
-            return f"{listing.letter_size_min} - {listing.letter_size_max}"
-    elif listing.letter_size_min and listing.letter_size_max:
-        if listing.letter_size_min == listing.letter_size_max:
-            return listing.letter_size_min
-        else:
-            return f"{listing.letter_size_min} - {listing.letter_size_max}"
-    else:
-        return "N/A"
-
-
 def send_new_listing_notification_telegram(chat_id: str, listing: BikeListingBase):
     try:
-        size = _format_size_string(listing)
+        size = listing.size_as_string() if listing is not None else None
         message = (
             f"<b>{listing.title}</b>\n"
             f"🚴 Category: {listing.category.capitalize()}\n"

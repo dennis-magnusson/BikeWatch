@@ -83,6 +83,23 @@ class BikeListingBase(BaseModel):
         """
         return bool(self.price) and min_price <= self.price <= max_price
 
+    def size_as_string(self) -> str:
+        size_str = ""
+        if self.letter_size_max and self.letter_size_min:
+            if self.letter_size_max == self.letter_size_min:
+                size_str = f"{self.letter_size_max} "
+            else:
+                size_str = f"{self.letter_size_min} - {self.letter_size_max} "
+        if self.letter_size_min and self.letter_size_max:
+            if self.letter_size_min == self.letter_size_max:
+                size_str += f"{self.letter_size_max}"
+            else:
+                size_str += f"{self.letter_size_min} - {self.letter_size_max}"
+
+        if size_str == "":
+            return "N/A"
+        return size_str
+
     class Config:
         from_attributes = True
         json_encoders = {Size: lambda v: v.name if v else None}
