@@ -16,8 +16,9 @@ def matches_alert(listing: BikeListingBase, alert: UserAlert) -> bool:
         and alert.max_price is not None
         and listing.matches_price_range(alert.min_price, alert.max_price)
     )
+    region_match = not alert.region or listing.region == alert.region
 
-    return category_match and size_match and price_match
+    return category_match and size_match and price_match and region_match
 
 
 def has_been_alerted(session: Session, alert_id: int, listing_id: int) -> bool:
