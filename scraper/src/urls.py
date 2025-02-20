@@ -36,18 +36,18 @@ categories = [
     #     url_id="58-etujousitetut",
     #     name="mountain_hardtail",
     # ),
-    Category(
-        url_id="69-triathlonaika-ajo",
-        name="triathlon",
-    ),
-    Category(
-        url_id="70-fatbiket",
-        name="fatbike",
-    ),
-    Category(
-        url_id="84-tasamaa",
-        name="electric_flat",
-    ),
+    # Category(
+    #     url_id="69-triathlonaika-ajo",
+    #     name="triathlon",
+    # ),
+    # Category(
+    #     url_id="70-fatbiket",
+    #     name="fatbike",
+    # ),
+    # Category(
+    #     url_id="84-tasamaa",
+    #     name="electric_flat",
+    # ),
     # Category(
     #     url_id="85-maasto",
     #     name="electric_mountain",

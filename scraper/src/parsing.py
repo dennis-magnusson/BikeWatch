@@ -155,8 +155,6 @@ def _parse_price(price_str: str) -> Optional[int]:
     - Returns None if the conversion fails.
     """
 
-    # TODO: Handle cases where the price_str contains multiple prices eg. "1000€, 900€ without X" or "2000€ -> 1500€" (price lowered)
-
     clean_str = re.sub(r"[^\d,\.]", "", price_str)
     if "," in clean_str and "." not in clean_str:
         clean_str = clean_str.replace(",", ".")
@@ -169,7 +167,21 @@ def _parse_price(price_str: str) -> Optional[int]:
     else:
         clean_str = clean_str.replace(",", "")
     try:
-        return int(float(clean_str))
+        price = int(float(clean_str))
+
+        # Heuristic: If price is >15k (fairly rare and most likely unreasonable) with even digits,
+        # check if it might be two prices concatenated (e.g. "35002500" from "3500 2500"). Then take the
+        # lower value as the price.
+        # Sometimes listings have prices like "3500 2500" where the first is an original price and the
+        # second is a discounted price. This heuristic tries to catch those cases.
+        if price > 15_000 and len(str(price)) % 2 == 0:
+            price_str = str(price)
+            half = len(price_str) // 2
+            first_half = int(price_str[:half])
+            second_half = int(price_str[half:])
+            price = min(first_half, second_half)
+
+        return price
     except ValueError:
         return None
 

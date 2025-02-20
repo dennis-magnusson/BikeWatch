@@ -10,8 +10,8 @@ export const CATEGORIES: string[] = [
     "hybrid",
     // "mountain_rigid",
     // "mountain_hardtail",
-    "triathlon",
-    "fatbike",
-    "electric_flat",
+    // "triathlon",
+    // "fatbike",
+    // "electric_flat",
     // "electric_mountain",
 ];
