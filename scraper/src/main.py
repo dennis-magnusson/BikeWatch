@@ -4,11 +4,12 @@ import os
 import traceback
 from time import sleep
 
-from common.database.db import get_db
 from db_operations import add_listing
 from scraping import find_listings_for_category, scrape_listing
 from sqlalchemy.orm import Session
 from urls import Category, categories
+
+from common.database import RedisClient, get_db
 
 
 class Scraper:
@@ -19,6 +20,7 @@ class Scraper:
         single_page: bool = False,
     ):
         self.session = session
+        self.redis_client = RedisClient()
         self.scraping_frequency_minutes = scraping_frequency_minutes
         self.single_page = single_page
 
@@ -32,7 +34,10 @@ class Scraper:
 
         for url in listing_urls:
             listing = scrape_listing(
-                url, category_name=category.name, session=self.session
+                url,
+                category_name=category.name,
+                session=self.session,
+                redis_client=self.redis_client,
             )
             if listing is not None:
                 add_listing(self.session, listing)

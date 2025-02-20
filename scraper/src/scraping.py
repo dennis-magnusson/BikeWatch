@@ -6,7 +6,6 @@ from typing import List, Optional
 from alerting import (
     has_been_alerted,
     matches_alert,
-    send_new_listing_notification_telegram,
 )
 from bs4 import BeautifulSoup
 from parsing import (
@@ -21,6 +20,7 @@ from request_throttler import get_request
 from sqlalchemy.orm import Session
 from urls import Category, get_url
 
+from common.database.redis_client import RedisClient
 from common.models.alert import AlertedListing, UserAlert
 from common.schemas.bike_listing import BikeListingBase
 
@@ -79,7 +79,7 @@ def get_listing_id(url: str) -> str:
 
 
 def scrape_listing(
-    url: str, category_name: str, session: Session
+    url: str, category_name: str, session: Session, redis_client: RedisClient
 ) -> Optional[BikeListingBase]:
     response = get_request(url)
     soup = BeautifulSoup(response.text, "html.parser")
@@ -112,12 +112,12 @@ def scrape_listing(
         if matches_alert(listing, alert) and not has_been_alerted(
             session, alert.id, listing.id
         ):
-            send_new_listing_notification_telegram(
-                alert.chat_id,
-                listing,
-            )
+            redis_client.publish_alert(alert.chat_id, listing)
+
             alerted_listing = AlertedListing(alert_id=alert.id, listing_id=listing.id)
             session.add(alerted_listing)
             session.commit()
+
+            logging.info(f"Alert matched for listing {listing.id}. Redis alert sent.")
 
     return listing
