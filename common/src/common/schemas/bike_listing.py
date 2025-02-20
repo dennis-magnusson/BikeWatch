@@ -90,11 +90,11 @@ class BikeListingBase(BaseModel):
                 size_str = f"{self.letter_size_max} "
             else:
                 size_str = f"{self.letter_size_min} - {self.letter_size_max} "
-        if self.letter_size_min and self.letter_size_max:
-            if self.letter_size_min == self.letter_size_max:
-                size_str += f"{self.letter_size_max}"
+        if self.number_size_max and self.number_size_min:
+            if self.number_size_max == self.number_size_min:
+                size_str += f"{self.number_size_max} cm"
             else:
-                size_str += f"{self.letter_size_min} - {self.letter_size_max}"
+                size_str += f"{self.number_size_min}-{self.number_size_max} cm"
 
         if size_str == "":
             return "N/A"
