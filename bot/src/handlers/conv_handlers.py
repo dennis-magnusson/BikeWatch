@@ -1,9 +1,3 @@
-from alert_handlers import (
-    confirm_remove_alert,
-    list_alerts,
-    remove_alert,
-    select_remove_alert,
-)
 from constants import (
     BIKE_CATEGORY,
     BIKE_MAXPRICE,
@@ -14,7 +8,13 @@ from constants import (
     REMOVE_ALERT,
     SELECT_REMOVE_ALERT,
 )
-from conversation_handlers import (
+from handlers.manage_alerts import (
+    confirm_remove_alert,
+    list_alerts,
+    remove_alert,
+    select_remove_alert,
+)
+from handlers.new_alert import (
     bike_category,
     bike_maxprice,
     bike_minprice,
