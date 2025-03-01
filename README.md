@@ -13,6 +13,12 @@ BikeWatch is service that monitors forum websites, where people resell old bikes
 <img src="docs/assets/notification-portrait.png" width="220" />
 </p>
 
-## docker compose
+## Getting started
+
+-   Run the services using docker-compose:
 
 `docker compose -f docker/docker-compose.yaml up --build`
+
+## License
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
