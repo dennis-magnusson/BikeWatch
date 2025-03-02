@@ -29,6 +29,16 @@ services:
             - ../.env
         <<: *shared-volumes
 
+    backend:
+        build:
+            context: ..
+            dockerfile: docker/Dockerfile.backend
+        ports:
+            - "8000:8000"
+        environment:
+            <<: *common-env
+        <<: *shared-volumes
+
     redis:
         image: "redis:alpine"
         ports:
