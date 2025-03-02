@@ -117,7 +117,6 @@ function FilterForm({
                                     setMinPrice={setMinPrice}
                                     maxPrice={maxPrice}
                                     setMaxPrice={setMaxPrice}
-                                    validatePrices={validatePrices}
                                     hasError={hasError}
                                 />
                             </FormInput>
