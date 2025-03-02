@@ -14,9 +14,12 @@ type SortBySelectProps = {
 };
 
 function SortBySelect({ sortBy, setSortBy }: SortBySelectProps) {
+    const handleValueChange = (value: string) => {
+        setSortBy(value as SortBy);
+    };
     return (
         <>
-            <Select value={sortBy} onValueChange={setSortBy}>
+            <Select value={sortBy} onValueChange={handleValueChange}>
                 <SelectTrigger className="w-48">
                     <SelectValue />
                 </SelectTrigger>
