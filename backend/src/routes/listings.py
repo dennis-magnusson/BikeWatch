@@ -4,8 +4,8 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy import func, or_
 from sqlalchemy.orm import joinedload
 
-from common import BikeListing
 from common.database import get_db
+from common.models import BikeListing
 
 router = APIRouter()
 

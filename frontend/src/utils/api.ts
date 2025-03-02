@@ -12,7 +12,7 @@ export const fetchListings = async (
     params: string
 ): Promise<FetchListingsResponse> => {
     try {
-        const url = `${BASE_URL}/listings?${params}`;
+        const url = `${BASE_URL}/listings/?${params}`;
         const response = await axios.get(url);
         return response.data;
     } catch (error) {
@@ -23,7 +23,7 @@ export const fetchListings = async (
 
 export const fetchLocations = async (): Promise<Location[]> => {
     try {
-        const url = `${BASE_URL}/locations`;
+        const url = `${BASE_URL}/locations/`;
         const response = await axios.get(url);
         return response.data;
     } catch (error) {

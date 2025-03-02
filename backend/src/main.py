@@ -1,9 +1,12 @@
+import os
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 
 from .routes import alerts, listings
 
-app = FastAPI()
+app = FastAPI(docs_url="/api/docs")
 
 origins = ["*"]
 
@@ -15,5 +18,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(listings.router)
-app.include_router(alerts.router)
+app.include_router(listings.router, prefix="/api")
+app.include_router(alerts.router, prefix="/api")
+
+app.mount("/", StaticFiles(directory="/frontend", html=True), name="frontend")

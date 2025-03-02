@@ -7,7 +7,6 @@ type MinMaxInputProps = {
     setMinPrice: React.Dispatch<React.SetStateAction<number>>;
     maxPrice: number;
     setMaxPrice: React.Dispatch<React.SetStateAction<number>>;
-    validatePrices: () => void;
     hasError: boolean;
 };
 
@@ -17,7 +16,6 @@ function MinMaxInput({
     setMaxPrice,
     minPrice,
     setMinPrice,
-    validatePrices,
     hasError,
 }: MinMaxInputProps) {
     const [minPriceInput, setMinPriceInput] = useState<string>(
