@@ -9,8 +9,18 @@ BikeWatch is service that monitors forum websites, where people resell old bikes
 
 ## Demo
 
+### Frontend
+
 <p float="left">
-<img src="docs/assets/notification-portrait.png" width="220" />
+<img src="docs/assets/frontend.png" width="600" />
+</p>
+
+### Telegram Bot
+
+<p float="left">
+<img src="docs/assets/notification.png" width="220" />
+<img src="docs/assets/bot_start.gif" width="220" />
+<img src="docs/assets/bot_help.gif" width="220" />
 </p>
 
 ## Getting started
