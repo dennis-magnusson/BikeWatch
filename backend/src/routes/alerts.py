@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
-from common import UserAlert
 from common.database import get_db
+from common.models import UserAlert
 from common.schemas.user_alert import UserAlertCreate, UserAlertResponse
 
 router = APIRouter()
