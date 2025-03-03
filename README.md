@@ -29,6 +29,12 @@ BikeWatch is service that monitors used bike listings on fillaritori.com and sen
 
 `docker compose -f docker/docker-compose.yaml up --build`
 
+## Disclaimer
+
+This software is provided "as is", without warranty of any kind, express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose, and noninfringement. In no event shall the authors be liable for any claim, damages, or other liability, whether in an action of contract, tort, or otherwise, arising from, out of, or in connection with the software or the use or other dealings in the software.
+
+Users are responsible for ensuring their use of this software complies with the terms of service of any websites they scrape.
+
 ## License
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
